@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Fairy
+  - List of fairies
+  - GameDataManager
+  - Active Fairy
+  - Allow Fairy
+  - Active Spell
   layers:
   - Default
   - TransparentFX

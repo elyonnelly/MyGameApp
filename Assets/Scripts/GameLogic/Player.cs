@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Assets.Scripts.GameLogic.DataModels;
 
 namespace Assets.Scripts.GameLogic
@@ -47,7 +46,7 @@ namespace Assets.Scripts.GameLogic
             ActiveFairies[fairyPosition].Spells[spellPosition] = Spell.Default;
         }
 
-        public void Attack(Fairy attack, Fairy victim, Spell spell)
+        public void Attack(Fairy attack, Fairy victim, OffensiveSpell spell)
         {
             attack.AttackFairy(victim, spell);
         }

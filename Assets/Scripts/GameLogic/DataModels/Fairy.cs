@@ -1,28 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
-    public abstract class Fairy
+    public class Fairy : ICloneable, IEquatable<Fairy>
     {
-        protected Fairy()
-        {
+        private int healthPoint;
 
-        }
-        protected Fairy(string name, int healthPoint, Spell[] spells, int magic, string description, int level, Element element)
+        private int score;
+
+        public Fairy(string name, string description, Element element)
         {
             Name = name;
-            HealthPoint = healthPoint;
-            Spells = spells;
-            Magic = magic;
+            HealthPoint = 30;
+            Spells = new Spell[4];
+            Magic = 30;
             Description = description;
-            Level = level;
+            Level = 1;
             Element = element;
             IsDead = false;
         }
 
+        public Fairy()
+        {
+        }
+
+        public static Fairy Default => new PlayerFairy();
+
         public string Name { get; }
 
-        private int healthPoint;
         public int HealthPoint
         {
             set
@@ -38,7 +43,7 @@ namespace Assets.Scripts.GameLogic.DataModels
                     healthPoint = value;
                 }
             }
-            get { return healthPoint; }
+            get => healthPoint;
         }
 
         public Spell[] Spells { set; get; }
@@ -49,8 +54,8 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public int Level { set; get; }
 
-        private int score;
-        public int Score {
+        public int Score
+        {
             //TODO организовать нормальное увеличение уровня
             set
             {
@@ -61,53 +66,71 @@ namespace Assets.Scripts.GameLogic.DataModels
 
                 score = value;
             }
-            get { return score; }
+            get => score;
         }
 
         public Element Element { get; }
-        public  bool IsDead { set; get; }
-
-        public static Fairy Default
-        {
-            get
-            {
-                return new PlayerFairy();
-            }
-        }
-
-        public abstract void AttackFairy(Fairy victim, Spell spell);
-
-        //TODO для других(не просто атакующих) заклинаний
-        public abstract void CastSpell(Spell spell);
-
-        public abstract void FairyDeath();
+        public bool IsDead { set; get; }
 
         public override bool Equals(object obj)
         {
-            var fairy = obj as Fairy;
-            return fairy != null &&
-                   Name == fairy.Name &&
-                   healthPoint == fairy.healthPoint &&
-                   HealthPoint == fairy.HealthPoint &&
-                   EqualityComparer<Spell[]>.Default.Equals(Spells, fairy.Spells) &&
-                   Magic == fairy.Magic &&
-                   Description == fairy.Description &&
-                   Level == fairy.Level &&
-                   Element == fairy.Element;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return Equals((Fairy) obj);
         }
 
         public override int GetHashCode()
         {
-            var hashCode = -887168581;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = hashCode * -1521134295 + healthPoint.GetHashCode();
-            hashCode = hashCode * -1521134295 + HealthPoint.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Spell[]>.Default.GetHashCode(Spells);
-            hashCode = hashCode * -1521134295 + Magic.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Description);
-            hashCode = hashCode * -1521134295 + Level.GetHashCode();
-            hashCode = hashCode * -1521134295 + Element.GetHashCode();
-            return hashCode;
+            unchecked
+            {
+                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Description != null ? Description.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int) Element;
+                return hashCode;
+            }
+        }
+
+        public virtual void AttackFairy(Fairy victim, OffensiveSpell spell)
+        {
+        }
+
+        //TODO для других(не просто атакующих) заклинаний
+        public virtual void CastSpell(Spell spell)
+        {
+        }
+
+        public virtual void FairyDeath()
+        {
+        }
+
+        public object Clone() => new Fairy(Name, Description, Element);
+
+        public bool Equals(Fairy other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return string.Equals(Name, other.Name) && string.Equals(Description, other.Description) && Element == other.Element;
         }
     }
 }

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3763656808110008208}
-  - component: {fileID: 6676674648639009775}
+  - component: {fileID: 4997980195754164351}
   m_Layer: 0
   m_Name: GameDataManager
   m_TagString: Untagged
@@ -25,13 +25,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5868857876635406226}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.030645, y: -0.30761006, z: 0.19628537}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6676674648639009775
+--- !u!114 &4997980195754164351
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,6 +40,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5868857876635406226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d47de3705b7f8fe49a31829b4ba322a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 39adae8901c15b342a89c5d92a1d4213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Fairy: {fileID: 3459286952398183683, guid: 40782e3e975e505438e52b212f4222f2, type: 3}

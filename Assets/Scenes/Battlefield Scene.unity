@@ -1376,18 +1376,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c45a0214b98c9842a539f0c68a8e026, type: 3}
---- !u!114 &1022205812 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4935505512307181599, guid: 7c45a0214b98c9842a539f0c68a8e026,
-    type: 3}
-  m_PrefabInstance: {fileID: 1022205811}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50fbdb89ef86dbc46b6c88510ec39646, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1053432501
 GameObject:
   m_ObjectHideFlags: 0
@@ -3037,9 +3025,38 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1022205812}
+      objectReference: {fileID: 4326530408504117588}
+    - target: {fileID: 4326530408619207705, guid: 089daa1d542fac84384de91889cdebf8,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 4326530408619207705, guid: 089daa1d542fac84384de91889cdebf8,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 089daa1d542fac84384de91889cdebf8, type: 3}
+--- !u!1 &4326530408504117587 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4326530408619207707, guid: 089daa1d542fac84384de91889cdebf8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4326530408504117586}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4326530408504117588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4326530408504117587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65cc0c25ba8f2dc42aabd34409bda7b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SceneName: Main Menu
 --- !u!1001 &8318413470331223484
 PrefabInstance:
   m_ObjectHideFlags: 0

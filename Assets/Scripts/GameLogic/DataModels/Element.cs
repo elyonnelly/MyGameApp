@@ -9,7 +9,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         Ice,
         Metal,
         Fire,
-        Narute,
+        Nature,
         Psi,
         Light,
         Dark,

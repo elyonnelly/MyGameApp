@@ -4,10 +4,10 @@ namespace Assets.Scripts.GameLogic.DataModels
 {
     public class PlayerFairy : Fairy
     {
-        public override void AttackFairy(Fairy victim, Spell spell)
+        public override void AttackFairy(Fairy victim, OffensiveSpell spell)
         {
             //TODO добавить обработку коэфициента в зависимости от стихии феи
-            Magic -= spell.MagicForCast;
+            Magic -= spell.Mana;
             victim.HealthPoint -= spell.Damage;
         }
 
@@ -26,11 +26,11 @@ namespace Assets.Scripts.GameLogic.DataModels
             throw new System.NotImplementedException();
         }
 
-        public PlayerFairy(string name, int healthPoint, Spell[] spells, int magic, string description, int level, Element element) : base(name, healthPoint, spells, magic, description, level, element)
+        public PlayerFairy() :base()
         {
-        }
 
-        public PlayerFairy()
+        }
+        public PlayerFairy(string name, string description, Element element) : base(name,description, element)
         {
         }
     }
