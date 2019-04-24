@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5973652273805527586}
   - component: {fileID: 5973652273805527590}
   - component: {fileID: 5973652273805527588}
-  - component: {fileID: 4248942790262075066}
   - component: {fileID: 5852584106890975860}
+  - component: {fileID: 7221281001356096499}
   m_Layer: 0
   m_Name: Active Fairy
   m_TagString: Active Fairy
@@ -108,7 +108,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.06, y: 0.99}
   m_EdgeRadius: 0
---- !u!50 &4248942790262075066
+--- !u!114 &5852584106890975860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5973652273805527587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92538d0521fd86e4eb2e8b30c8d32b55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsEmpty: 0
+  Number: 0
+  isDrag: 0
+--- !u!50 &7221281001356096499
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -129,18 +144,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5852584106890975860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5973652273805527587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92538d0521fd86e4eb2e8b30c8d32b55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Number: 0
-  Spells: []
-  IsSlotEmpty: 0

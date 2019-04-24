@@ -2,11 +2,8 @@
 
 namespace Assets.Scripts.GUI
 {
-    public class ActiveFairy : MonoBehaviour
+    public class ActiveSpell : MonoBehaviour
     {
-        //Возможно можно убрать переменную IsEmpty;
-        
-
         public bool IsEmpty;
         public int Number;
 
@@ -16,13 +13,6 @@ namespace Assets.Scripts.GUI
         private Vector3 screenPoint;
         private Vector3 offset;
 
-        void Start()
-        {
-            foreach (var spell in gameObject.transform.GetComponentsInChildren<ActiveSpell>())
-            {
-                spell.IsEmpty = true;
-            }
-        }
         private void OnMouseDown()
         {
             if (IsEmpty)
@@ -47,9 +37,10 @@ namespace Assets.Scripts.GUI
                 return;
             }
 
+            var fairy = gameObject.transform.GetComponentInParent<ActiveFairy>();
             if (!IsEmpty)
             {
-                EventAggregator.PublishFairyDeactivation(Number,gameObject.name);
+                EventAggregator.PublishRemovalSpell(fairy.Number, Number, gameObject.name);
             }
 
             MakeEmpty();
@@ -69,12 +60,11 @@ namespace Assets.Scripts.GUI
 
         private void MakeEmpty()
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
-            gameObject.name = $"ActiveFairy{Number}";
+            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptySpell");
+            gameObject.name = $"ActiveSpell{Number}";
             transform.position = initialPosition;
             IsEmpty = true;
             isDrag = false;
         }
-
     }
 }

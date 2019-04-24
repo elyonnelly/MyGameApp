@@ -8,19 +8,19 @@ namespace Assets.Scripts
     public class DataLoadController : MonoBehaviour
     {
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             //TODO добавить десериализацию данных о игроке
             var activeFairies = new List<Fairy>
             {
-                (Fairy)Fairies.ListOfFairies["Tadana"].Clone(),
-                (Fairy)Fairies.ListOfFairies["Sillia"].Clone(),
-                (Fairy)Fairies.ListOfFairies["Vesbat"].Clone(),
-                (Fairy)Fairies.ListOfFairies["Rasrow"].Clone(),
-                (Fairy)Fairies.ListOfFairies["Dracwin"].Clone()
+                (Fairy)DataOfModels.Fairies["Tadana"].Clone(),
+                (Fairy)DataOfModels.Fairies["Sillia"].Clone(),
+                (Fairy)DataOfModels.Fairies["Vesbat"].Clone(),
+                (Fairy)DataOfModels.Fairies["Rasrow"].Clone(),
+                (Fairy)DataOfModels.Fairies["Dracwin"].Clone()
             };
             var allowFairies = new List<Fairy>();
-            foreach (var fairy in Fairies.ListOfFairies)
+            foreach (var fairy in DataOfModels.Fairies)
             {
                 allowFairies.Add((Fairy)fairy.Value.Clone());
             }
@@ -31,10 +31,5 @@ namespace Assets.Scripts
             GameDataManager.Instance.PlayerData = player; //Так точно работает??
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
     }
 }

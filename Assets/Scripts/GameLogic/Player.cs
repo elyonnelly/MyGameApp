@@ -11,11 +11,6 @@ namespace Assets.Scripts.GameLogic
             AllowFairies = allowFairies;
             CurrentStage = currentStage;
 
-            EventAggregator.AddActiveFairy += AddActiveFairy;
-            EventAggregator.RemoveActiveFairy += RemoveActiveFairy;
-            EventAggregator.AddActiveSpell += AddActiveSpell;
-            EventAggregator.RemoveActiveSpell += RemoveActiveSpell;
-            EventAggregator.PlayerAttack += Attack;
         }
 
         public Player()

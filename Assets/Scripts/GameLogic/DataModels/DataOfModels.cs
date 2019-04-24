@@ -2,12 +2,12 @@
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
-    public class Fairies
+    public class DataOfModels
     {
         //public string[] NamesOfFairies = {"Worgot", "Rasrow", "Sirael", "Manox","Dracwin", "Beltaur"};
 
         //TODO нормально загрузить информацию о типах из файла и переместить это в какое-то логичное место
-        public static Dictionary<string, Fairy> ListOfFairies = new Dictionary<string, Fairy>()
+        public static Dictionary<string, Fairy> Fairies = new Dictionary<string, Fairy>()
         {
             
             {
@@ -35,7 +35,7 @@ namespace Assets.Scripts.GameLogic.DataModels
             },
             {
                 "Sillia", new Fairy("Sillia",
-                                    "Nature Fairies, like Sillia, get their energy from the living things around them. " +
+                                    "Nature DataOfModels, like Sillia, get their energy from the living things around them. " +
                                     "These beings hate being fenced in, therefore you'll only find them out of doors, under trees, " +
                                     "in bushes or in the undergrowth. ",
                                     Element.Nature)
@@ -43,7 +43,7 @@ namespace Assets.Scripts.GameLogic.DataModels
             {
                 "Tadana", new Fairy("Tadana",
                                     "In the wide spaces of the oceans and seas, but also in the lakes and rivers in Zanzarah, " +
-                                    "Water Fairies can be found. Tadana is a very young water being, who is often underestimated by her opponents. ",
+                                    "Water DataOfModels can be found. Tadana is a very young water being, who is often underestimated by her opponents. ",
                                     Element.Water)
             },
             {
@@ -70,7 +70,7 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         };
 
-        public static Dictionary<string, Spell> ListOfSpell = new Dictionary<string, Spell>()
+        public static Dictionary<string, Spell> Spells = new Dictionary<string, Spell>()
         {
             {
                 "Small Spirit", new OffensiveSpell(Element.Nature, 1, "Small Spirit", 1, 2, 5, Element.Water)

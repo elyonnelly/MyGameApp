@@ -7,6 +7,7 @@ namespace Assets.Scripts.GUI
     {
         // Start is called before the first frame update
         public GameObject AllowFairies;
+        public GameObject AllowSpells;
         public void LoadScene(string sceneName)
         {
             SceneManager.LoadScene(sceneName);
@@ -15,9 +16,14 @@ namespace Assets.Scripts.GUI
 
         public void DisplayAllowFairies()
         {
+
             for (int i = 0; i < AllowFairies.transform.childCount; i++)
             {
                 AllowFairies.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            for (int i = 0; i < AllowSpells.transform.childCount; i++)
+            {
+                AllowSpells.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
 
@@ -26,6 +32,10 @@ namespace Assets.Scripts.GUI
             for (int i = 0; i < AllowFairies.transform.childCount; i++)
             {
                 AllowFairies.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            for (int i = 0; i < AllowSpells.transform.childCount; i++)
+            {
+                AllowSpells.transform.GetChild(i).gameObject.SetActive(true);
             }
         }
     }

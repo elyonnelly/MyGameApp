@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.GUI
 {
     public class ActiveFairies : MonoBehaviour
     {
@@ -8,6 +8,8 @@ namespace Assets.Scripts
         void Start()
         {
             var i = 0;
+            Debug.Log(GameDataManager.Instance.PlayerData);
+
             foreach (var fairy in GameDataManager.Instance.PlayerData.ActiveFairies)
             {
                 transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}/{fairy.Name}");
@@ -20,7 +22,7 @@ namespace Assets.Scripts
         // Update is called once per frame
         void Update()
         {
-        
+
         }
     }
 }

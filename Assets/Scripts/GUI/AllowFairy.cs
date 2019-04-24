@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.GameLogic.DataModels;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.GUI
 {
@@ -57,25 +56,26 @@ namespace Assets.Scripts.GUI
         }
         private void OnTriggerEnter2D(Collider2D collider)
         {
+            Debug.ClearDeveloperConsole();
             if (collider.gameObject.tag != "Active Fairy" || gameObject.tag != "Allow Fairy")
             {
                 return;
             }
-
-            if (GameDataManager.Instance.FairyActive(gameObject.name))
+            var oldFairy = collider.gameObject.GetComponent<ActiveFairy>();
+            var newFairy = gameObject;
+            
+            if (!oldFairy.IsEmpty)
             {
-                Debug.Log("text");
-                return;
+                EventAggregator.PublishFairyDeactivation(oldFairy.Number, oldFairy.gameObject.name);
             }
-
-            if (!collider.gameObject.GetComponent<ActiveFairy>().IsEmpty)
-            {
-                EventAggregator.PublishFairyDeactivation(collider.gameObject.name);
-            }
-            EventAggregator.PublishFairyActivation(gameObject.name);
-
-            ChangeFairy(collider.gameObject, gameObject);
+            EventAggregator.PublishFairyActivation(oldFairy.Number, newFairy.name);
+            ChangeFairy(oldFairy.gameObject, newFairy);
             MakeUsed();
+
+            foreach (var fairy in GameDataManager.Instance.PlayerData.ActiveFairies)
+            {
+                Debug.Log(fairy.Name);
+            }
         }
 
         private void ChangeFairy(GameObject oldFairy, GameObject newFairy)
@@ -85,7 +85,8 @@ namespace Assets.Scripts.GUI
             oldFairy.GetComponent<ActiveFairy>().IsEmpty = false;
         }
 
-        private void MakeUnused(string name)
+        //эту обработку возможно стоит перенести в ну например ListOfFairies
+        private void MakeUnused(int position, string name)
         {
             if (name == gameObject.name)
             {
@@ -101,6 +102,6 @@ namespace Assets.Scripts.GUI
             isDrag = false;
         }
 
-        
+
     }
 }

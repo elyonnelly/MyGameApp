@@ -7,66 +7,62 @@ namespace Assets.Scripts.GUI
     public class ListOfFairies : MonoBehaviour
     {
         public GameObject Fairy;
-        public Dictionary<string, GameObject> TableOfFairies;
+        private Dictionary<string, GameObject> tableOfFairies;
 
-        // Start is called before the first frame update
         private void Start()
         {
             EventAggregator.DisableFairy += UpdateTable;
 
-            TableOfFairies = new Dictionary<string, GameObject>();
-            var player = GameDataManager.Instance.PlayerData;
-            var namesOfFairies = new string[Fairies.ListOfFairies.Count];
+            tableOfFairies = new Dictionary<string, GameObject>();
+            FillTableOfFairies();
 
-            Fairies.ListOfFairies.Keys.CopyTo(namesOfFairies, 0);
+            var player = GameDataManager.Instance.PlayerData;
+
+            foreach (var fairy in player.AllowFairies)
+            {
+                tableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}/{fairy.Name}");
+                tableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsAllow = true;
+            }
+
+            foreach (var fairy in player.ActiveFairies)
+            {
+                tableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/EmptyPrefab");
+                tableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsUsed = true;
+            }
+        }
+
+        private void FillTableOfFairies()
+        {
+            var namesOfFairies = new string[DataOfModels.Fairies.Count];
+
+            DataOfModels.Fairies.Keys.CopyTo(namesOfFairies, 0);
             var count = 0;
 
             for (var y = transform.position.y; y > transform.position.y - 6; y -= 1)
             {
                 for (var x = transform.position.x; x < transform.position.x + 6; x += 1)
                 {
-                    var newFairy = Instantiate(Fairy, new Vector3(x, y, -1), Quaternion.identity);
-                    newFairy.transform.SetParent(transform);
-                    newFairy.SetActive(false);
+                    var name = count < namesOfFairies.Length ? namesOfFairies[count] : $"EmptySlot + {count}";
+                    tableOfFairies.Add(name, CreateNewFairySprite(name, new Vector3(x, y, -1)));
 
-                    newFairy.name = count < namesOfFairies.Length ? namesOfFairies[count] : $"EmptySlot + {count}";
-                    TableOfFairies.Add(newFairy.name, newFairy);
-                    /*try
-                    {
-                        TableOfFairies.Add(newFairy.name, newFairy);
-                    }
-                    catch(Exception ex)
-                    {
-                        Debug.Log(ex.Message);
-
-                    }*/
                     count++;
                 }
             }
-
-            var i = 0;
-            foreach (var fairy in player.AllowFairies)
-            {
-                TableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}/{fairy.Name}");
-                TableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsAllow = true;
-            }
-
-            foreach (var fairy in player.ActiveFairies)
-            {
-                TableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/EmptyPrefab");
-                TableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsUsed = true;
-            }
-        }
-        
-        // Update is called once per frame
-        private void Update()
-        {
         }
 
-        private void UpdateTable(string fairyName)
+        private GameObject CreateNewFairySprite(string name, Vector3 position)
         {
-            TableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}/{fairyName}");
-            TableOfFairies[fairyName].AddComponent<AllowFairy>();
+            var newFairy = Instantiate(Fairy, position, Quaternion.identity);
+            newFairy.transform.SetParent(transform);
+            newFairy.SetActive(false);
+            newFairy.name = name;
+            return newFairy;
+        }
+
+
+        private void UpdateTable(int position, string fairyName)
+        {
+            tableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}/{fairyName}");
         }
     }
 

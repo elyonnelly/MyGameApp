@@ -13,6 +13,10 @@ namespace Assets.Scripts.GameLogic.DataModels
             Name = name;
             HealthPoint = 30;
             Spells = new Spell[4];
+            for (int i = 0; i < 4; i++)
+            {
+                Spells[i] = new Spell();
+            }
             Magic = 30;
             Description = description;
             Level = 1;
