@@ -11,13 +11,8 @@ namespace Assets.Scripts.GUI
         void OnMouseDown()
         {
             initialPosition = transform.position;
-            //Instantiate(gameObject.tag == "Active Fairy" ? Resources.Load<GameObject>("Fairy") : gameObject, initialPosition, Quaternion.identity).transform.SetParent(GameObject.FindGameObjectWithTag("List of fairies").transform);
             offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-            //if (gameObject.transform.position != initialPosition)
-            //{
-                Instantiate(gameObject.tag == "Active Fairy" ? Resources.Load<GameObject>("Fairy") : gameObject, initialPosition, Quaternion.identity);//.transform.SetParent(Parent.transform);
-
-            //}
+            Instantiate(gameObject.tag == "Active Fairy" ? Resources.Load<GameObject>("Fairy") : gameObject, initialPosition, Quaternion.identity);//.transform.SetParent(Parent.transform);
         }
 
         void OnMouseUp()
@@ -29,7 +24,6 @@ namespace Assets.Scripts.GUI
             Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
             Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
             transform.position = curPosition;
-            //Debug.Log(transform.position);
         }
 
         void OnCollisionEnter2D(Collision2D collision)

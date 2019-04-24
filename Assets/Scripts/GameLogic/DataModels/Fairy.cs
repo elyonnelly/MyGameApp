@@ -84,7 +84,7 @@ namespace Assets.Scripts.GameLogic.DataModels
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
@@ -96,7 +96,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         {
             unchecked
             {
-                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                var hashCode = Name != null ? Name.GetHashCode() : 0;
                 hashCode = (hashCode * 397) ^ (Description != null ? Description.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (int) Element;
                 return hashCode;

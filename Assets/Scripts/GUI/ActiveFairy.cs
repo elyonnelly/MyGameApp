@@ -1,10 +1,8 @@
-﻿using Assets.Scripts.GameLogic.DataModels;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.GUI
 {
-    public class ChangeActiveFairy : MonoBehaviour
+    public class ActiveFairy : MonoBehaviour
     {
         //Возможно можно убрать переменную IsEmpty;
         public bool IsEmpty;
@@ -39,17 +37,12 @@ namespace Assets.Scripts.GUI
                 return;
             }
 
-            if (Fairies.ListOfFairies.ContainsKey(gameObject.name))
+            if (!IsEmpty)
             {
-                GameDataManager.Instance.PlayerData.ActiveFairies.Remove(Fairies.ListOfFairies[gameObject.name]);
+                EventAggregator.PublishFairyDeactivation(gameObject.name);
             }
 
-            EventAggregator.PublishFreedomFairy(gameObject.name);
-            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
-            gameObject.name = $"ActiveFairy{Number}";
-            transform.position = initialPosition;
-            IsEmpty = true;
-            isDrag = false;
+            MakeEmpty();
         }
 
         private void OnMouseDrag()
@@ -64,9 +57,14 @@ namespace Assets.Scripts.GUI
             transform.position = curPosition;
         }
 
-        public void OnMouseClick(PointerEventData eventData)
+        private void MakeEmpty()
         {
-            Debug.Log("click");
+            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
+            gameObject.name = $"ActiveFairy{Number}";
+            transform.position = initialPosition;
+            IsEmpty = true;
+            isDrag = false;
         }
+
     }
 }

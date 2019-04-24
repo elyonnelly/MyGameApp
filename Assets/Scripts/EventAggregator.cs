@@ -20,14 +20,19 @@ namespace Assets.Scripts
         public static event ChangeSpell AddActiveSpell;
         public static event ChangeSpell RemoveActiveSpell;
 
-        public delegate void ChangeAciveFairy(string nameFairy);
+        public delegate void ChangeActiveFairy(string nameFairy);
 
-        public static event ChangeAciveFairy FreedomFairy;
+        public static event ChangeActiveFairy DisableFairy;
+        public static event ChangeActiveFairy ActivateFairy;
 
-        public static void PublishFreedomFairy(string name)
+        public static void PublishFairyDeactivation(string name)
         {
-            FreedomFairy?.Invoke(name);
+            DisableFairy?.Invoke(name);
+        }
 
+        public static void PublishFairyActivation(string name)
+        {
+            ActivateFairy?.Invoke(name);
         }
 
         public delegate void PlayerWin();

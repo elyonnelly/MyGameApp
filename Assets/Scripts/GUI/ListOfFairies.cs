@@ -1,10 +1,8 @@
-﻿using System;
-using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Assets.Scripts.GameLogic.DataModels;
-using Assets.Scripts.GUI;
+using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.GUI
 {
     public class ListOfFairies : MonoBehaviour
     {
@@ -14,13 +12,13 @@ namespace Assets.Scripts
         // Start is called before the first frame update
         private void Start()
         {
-            EventAggregator.FreedomFairy += UpdateTable;
+            EventAggregator.DisableFairy += UpdateTable;
 
             TableOfFairies = new Dictionary<string, GameObject>();
             var player = GameDataManager.Instance.PlayerData;
-            var NamesOfFairies = new string[Fairies.ListOfFairies.Count];
+            var namesOfFairies = new string[Fairies.ListOfFairies.Count];
 
-            Fairies.ListOfFairies.Keys.CopyTo(NamesOfFairies, 0);
+            Fairies.ListOfFairies.Keys.CopyTo(namesOfFairies, 0);
             var count = 0;
 
             for (var y = transform.position.y; y > transform.position.y - 6; y -= 1)
@@ -31,8 +29,9 @@ namespace Assets.Scripts
                     newFairy.transform.SetParent(transform);
                     newFairy.SetActive(false);
 
-                    newFairy.name = count < NamesOfFairies.Length ? NamesOfFairies[count] : $"EmptySlot + {count}";
-                    try
+                    newFairy.name = count < namesOfFairies.Length ? namesOfFairies[count] : $"EmptySlot + {count}";
+                    TableOfFairies.Add(newFairy.name, newFairy);
+                    /*try
                     {
                         TableOfFairies.Add(newFairy.name, newFairy);
                     }
@@ -40,7 +39,7 @@ namespace Assets.Scripts
                     {
                         Debug.Log(ex.Message);
 
-                    }
+                    }*/
                     count++;
                 }
             }
@@ -49,17 +48,16 @@ namespace Assets.Scripts
             foreach (var fairy in player.AllowFairies)
             {
                 TableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}/{fairy.Name}");
-                TableOfFairies[fairy.Name].AddComponent<DragAllowFairy>();
-                    //GetComponent<DragAllowFairy>().AllowForDrag = true;
+                TableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsAllow = true;
             }
 
             foreach (var fairy in player.ActiveFairies)
             {
                 TableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/EmptyPrefab");
-                Destroy(TableOfFairies[fairy.Name].GetComponent<DragAllowFairy>());
+                TableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsUsed = true;
             }
         }
-
+        
         // Update is called once per frame
         private void Update()
         {
@@ -68,8 +66,7 @@ namespace Assets.Scripts
         private void UpdateTable(string fairyName)
         {
             TableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}/{fairyName}");
-            TableOfFairies[fairyName].AddComponent<DragAllowFairy>();
-            //TableOfFairies[fairyName].GetComponent<DragAllowFairy>().IsUsed = false;
+            TableOfFairies[fairyName].AddComponent<AllowFairy>();
         }
     }
 
