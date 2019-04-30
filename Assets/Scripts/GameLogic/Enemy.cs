@@ -7,9 +7,5 @@ namespace Assets.Scripts.GameLogic
     {
         public List<Fairy> ActiveFairies { get; set; }
 
-        public void Attack(Fairy attack, Fairy victim, OffensiveSpell spell)
-        {
-            attack.AttackFairy(victim, spell);
-        }
     }
 }

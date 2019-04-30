@@ -1,6 +1,9 @@
 ﻿
+using System.Runtime.Serialization;
+
 namespace Assets.Scripts.GameLogic.DataModels
 {
+    [DataContract]
     public enum Element
     {
         Water,

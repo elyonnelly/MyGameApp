@@ -5,6 +5,12 @@ namespace Assets.Scripts.GameLogic
     {
         private Player player;
         private Enemy enemy;
+
+        public GameManager()
+        {
+            player = new Player();
+            enemy = new Enemy();
+        }
         void CheckLife()
         {
             var isPlayerLost = true;
@@ -23,7 +29,7 @@ namespace Assets.Scripts.GameLogic
                 {
                     foreach (var enemyFairy in enemy.ActiveFairies)
                     {
-                        playerFairy.Score += enemyFairy.Level > playerFairy.Level ? enemyFairy.Level - playerFairy.Level : 
+                        playerFairy.ExperiencePoints += enemyFairy.Level > playerFairy.Level ? enemyFairy.Level - playerFairy.Level : 
                                                                                     (playerFairy.Level - enemyFairy.Level) / 2;
                     }
                 }

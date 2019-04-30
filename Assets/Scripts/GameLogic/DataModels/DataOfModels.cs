@@ -1,74 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using UnityEngine;
+
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
     public class DataOfModels
     {
+
+        static DataOfModels()
+        {
+            var jsonFormatter = new DataContractJsonSerializer(typeof(Fairy[]));
+            var fairies = new Fairy[Fairies.Values.Count];
+            Fairies.Values.CopyTo(fairies, 0);
+            using (FileStream fs = new FileStream("fairies.json", FileMode.OpenOrCreate))
+            {
+                jsonFormatter.WriteObject(fs, fairies);
+            }
+        }
         //public string[] NamesOfFairies = {"Worgot", "Rasrow", "Sirael", "Manox","Dracwin", "Beltaur"};
 
-        //TODO нормально загрузить информацию о типах из файла и переместить это в какое-то логичное место
-        public static Dictionary<string, Fairy> Fairies = new Dictionary<string, Fairy>()
-        {
-            
-            {
-                "Abery", new Fairy("Abery", "This mushroomhead must be one of the weirdest creatures in Zanzarah, and is easy to find among the other mushrooms and toadstools. " +
-                                            "Once this being reaches a certain age and level of training, " +
-                                            "it becomes a particularly dangerous specimen. ",
-                                   Element.Nature)
-            },
-            {
-                "Worgot", new Fairy("Worgot", "As larvae, Worgots depend on symbiosis with their flying companions, " +
-                                              "which they cannot completely steer yet. This strange pair can be found in the bark of trees, " +
-                                              "in blossoming plants and in swamps. ",
-                                    Element.Nature)
-            },
-            {
-                "Rasrow", new Fairy("Rasrow", "Creatures of chaos, like Rasrow, are native to the Shadow Realm. " +
-                                              "Their sinister powers spread terror among the mythical creatures. " +
-                                              "Only very few fairies can prevail in a fight against one of these.",
-                                    Element.Chaos)
-            },
-            {
-                "Sirael", new Fairy("Sirael", "Air beings like this have their entries to the world of Zanzarah in steam clouds and inside birds' nests. " +
-                                              "They are very careless, which is why they are often sighted by mortals.",
-                                    Element.Air)
-            },
-            {
-                "Sillia", new Fairy("Sillia",
-                                    "Nature DataOfModels, like Sillia, get their energy from the living things around them. " +
-                                    "These beings hate being fenced in, therefore you'll only find them out of doors, under trees, " +
-                                    "in bushes or in the undergrowth. ",
-                                    Element.Nature)
-            },
-            {
-                "Tadana", new Fairy("Tadana",
-                                    "In the wide spaces of the oceans and seas, but also in the lakes and rivers in Zanzarah, " +
-                                    "Water DataOfModels can be found. Tadana is a very young water being, who is often underestimated by her opponents. ",
-                                    Element.Water)
-            },
-            {
-                "Vesbat", new Fairy("Vesbat", "Stones and rock build the entrances to the world of Zanzarah. " +
-                                              "Gritting its teeth and using its excellent sense of smell, the Vesbat approaches its opponent. " +
-                                              "It requires training in both stamina and strength. ",
-                                    Element.Stone)
-            },
-            {
-                "Manox", new Fairy("Manox", "These beings of darkness are the epitome of evil. They are hard to catch and hardly ever get on with any other species. " +
-                                            "These very strong beings can only be held back with Crystal Spheres. ",
-                                   Element.Dark)
-            },
-            {
-                "Dracwin", new Fairy("Dracwin", "Dragons are adherents of the element of fire, and a special kind of flying companion. " +
-                                                "Dracwin can be trained to become a Flagwin using an Elemental Stone of Fire.",
-                                    Element.Fire)
-            },
-            {
-                "Beltaur", new Fairy("Beltaur", "This grey-red companion is plump and appears clumsy and awkward in its movements. " +
-                                                "However, it possesses psi powers few others have, though these are not yet fully developed.",
-                                     Element.Psi)
-            }
-
-        };
 
         public static Dictionary<string, Spell> Spells = new Dictionary<string, Spell>()
         {
@@ -98,6 +50,71 @@ namespace Assets.Scripts.GameLogic.DataModels
             },
 
         };
+
+        //TODO нормально загрузить информацию о типах из файла и переместить это в какое-то логичное место
+        public static Dictionary<string, Fairy> Fairies = new Dictionary<string, Fairy>()
+        {
+            
+            {
+                "Abery", new Fairy("Abery", "This mushroomhead must be one of the weirdest creatures in Zanzarah, and is easy to find among the other mushrooms and toadstools. " +
+                                            "Once this being reaches a certain age and level of training, " +
+                                            "it becomes a particularly dangerous specimen. ",
+                                   Element.Nature, new Spell[] {(Spell)Spells["Small Spirit"].Clone() ,(Spell)Spells["Telekinesis"].Clone()})
+            },
+            {
+                "Worgot", new Fairy("Worgot", "As larvae, Worgots depend on symbiosis with their flying companions, " +
+                                              "which they cannot completely steer yet. This strange pair can be found in the bark of trees, " +
+                                              "in blossoming plants and in swamps. ",
+                                    Element.Nature, new Spell[] {(Spell)Spells["Small Spirit"].Clone() ,(Spell)Spells["Telekinesis"].Clone()})
+            },
+            {
+                "Rasrow", new Fairy("Rasrow", "Creatures of chaos, like Rasrow, are native to the Shadow Realm. " +
+                                              "Their sinister powers spread terror among the mythical creatures. " +
+                                              "Only very few fairies can prevail in a fight against one of these.",
+                                    Element.Chaos, new Spell[] {(Spell)Spells["Chaos Lightning"].Clone() ,(Spell)Spells["Dance of Chaos"].Clone()})
+            },
+            {
+                "Sirael", new Fairy("Sirael", "Air beings like this have their entries to the world of Zanzarah in steam clouds and inside birds' nests. " +
+                                              "They are very careless, which is why they are often sighted by mortals.",
+                                    Element.Air, new Spell[] {(Spell)Spells["Confused Spirit"].Clone() ,(Spell)Spells["Spirit of Chaos"].Clone()})
+            },
+            {
+                "Sillia", new Fairy("Sillia",
+                                    "Nature DataOfModels, like Sillia, get their energy from the living things around them. " +
+                                    "These beings hate being fenced in, therefore you'll only find them out of doors, under trees, " +
+                                    "in bushes or in the undergrowth. ",
+                                    Element.Nature, new Spell[] {(Spell)Spells["Small Spirit"].Clone() ,(Spell)Spells["Telekinesis"].Clone()})
+            },
+            {
+                "Tadana", new Fairy("Tadana",
+                                    "In the wide spaces of the oceans and seas, but also in the lakes and rivers in Zanzarah, " +
+                                    "Water DataOfModels can be found. Tadana is a very young water being, who is often underestimated by her opponents. ",
+                                    Element.Water, new Spell[] {(Spell)Spells["Small Spirit"].Clone() ,(Spell)Spells["Telekinesis"].Clone()})
+            },
+            {
+                "Vesbat", new Fairy("Vesbat", "Stones and rock build the entrances to the world of Zanzarah. " +
+                                              "Gritting its teeth and using its excellent sense of smell, the Vesbat approaches its opponent. " +
+                                              "It requires training in both stamina and strength. ",
+                                    Element.Stone, new Spell[] {(Spell)Spells["Quake of Power"].Clone() ,(Spell)Spells["Insanity"].Clone()})
+            },
+            {
+                "Manox", new Fairy("Manox", "These beings of darkness are the epitome of evil. They are hard to catch and hardly ever get on with any other species. " +
+                                            "These very strong beings can only be held back with Crystal Spheres. ",
+                                   Element.Dark, new Spell[] {(Spell)Spells["Confused Spirit"].Clone() ,(Spell)Spells["Spirit of Chaos"].Clone()})
+            },
+            {
+                "Dracwin", new Fairy("Dracwin", "Dragons are adherents of the element of fire, and a special kind of flying companion. " +
+                                                "Dracwin can be trained to become a Flagwin using an Elemental Stone of Fire.",
+                                    Element.Fire, new Spell[] {(Spell)Spells["Quake of Power"].Clone() ,(Spell)Spells["Insanity"].Clone()})
+            },
+            {
+                "Beltaur", new Fairy("Beltaur", "This grey-red companion is plump and appears clumsy and awkward in its movements. " +
+                                                "However, it possesses psi powers few others have, though these are not yet fully developed.",
+                                     Element.Psi, new Spell[] {(Spell)Spells["Chaos Lightning"].Clone() ,(Spell)Spells["Dance of Chaos"].Clone()})
+            }
+
+        };
+
 
     }
 }

@@ -1,14 +1,25 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
+    [DataContract]
     public class Spell : ICloneable
     {
-        public string Name { get; }
-        public Element MajorElement { get; }
-        public Element MinorElement { get; }
-        public int Mana { get; }
-        public int Level { get; }
+        [DataMember]
+        public string Name { private set; get; }
+
+        [DataMember]
+        public Element MajorElement { private set; get; }
+
+        [DataMember]
+        public Element MinorElement { private set; get; }
+
+        [DataMember]
+        public int Mana { private set; get; }
+
+        [DataMember]
+        public int Level { private set; get; }
 
         public Spell(Element majorElement, int level, string name, int mana, Element minorElement)
         {
@@ -19,12 +30,12 @@ namespace Assets.Scripts.GameLogic.DataModels
             Level = level;
         }
 
-        public Spell()
+        public Spell(string name)
         {
-
+            Name = name;
         }
 
-        public static Spell Default => new Spell();
+        public static Spell Default => new Spell("Empty Slot");
 
         public object Clone()
         {

@@ -13,12 +13,11 @@ namespace Assets.Scripts.GUI
         public bool isDrag;
 
         private Vector3 initialPosition;
-        private Vector3 screenPoint;
         private Vector3 offset;
 
         void Start()
         {
-            foreach (var spell in gameObject.transform.GetComponentsInChildren<ActiveSpell>())
+            foreach (var spell in transform.GetComponentsInChildren<ActiveSpell>())
             {
                 spell.IsEmpty = true;
             }
@@ -37,7 +36,7 @@ namespace Assets.Scripts.GUI
             }
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 2);
 
-            offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+            offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
         }
 
         private void OnMouseUp()
@@ -49,7 +48,7 @@ namespace Assets.Scripts.GUI
 
             if (!IsEmpty)
             {
-                EventAggregator.PublishFairyDeactivation(Number,gameObject.name);
+                EventAggregator.PublishFairyDeactivation(Number, name);
             }
 
             MakeEmpty();
@@ -62,15 +61,15 @@ namespace Assets.Scripts.GUI
                 return;
             }
 
-            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
             var curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
             transform.position = curPosition;
         }
 
         private void MakeEmpty()
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
-            gameObject.name = $"ActiveFairy{Number}";
+            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
+            name = $"ActiveFairy{Number}";
             transform.position = initialPosition;
             IsEmpty = true;
             isDrag = false;

@@ -41,10 +41,6 @@ namespace Assets.Scripts.GameLogic
             ActiveFairies[fairyPosition].Spells[spellPosition] = Spell.Default;
         }
 
-        public void Attack(Fairy attack, Fairy victim, OffensiveSpell spell)
-        {
-            attack.AttackFairy(victim, spell);
-        }
 
         
     }

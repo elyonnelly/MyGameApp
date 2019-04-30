@@ -1,37 +1,32 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
+    [DataContract]
     public class Fairy : ICloneable, IEquatable<Fairy>
     {
+        //[DataMember]
+        public string Name { private set; get; }
+
+        [DataMember]
+        public string Description { private set; get; }
+
+        [DataMember]
+        public Element Element { private set; get; }
+
+        [DataMember]
+        public int LevelForEvolution { private set; get; }
+
+        [DataMember]
+        public string EvolvesTo { private set; get; }
+
+        [DataMember]
+        public Spell[] Spells { set; get; }
+        public int Level { set; get; }
+
         private int healthPoint;
-
-        private int score;
-
-        public Fairy(string name, string description, Element element)
-        {
-            Name = name;
-            HealthPoint = 30;
-            Spells = new Spell[4];
-            for (int i = 0; i < 4; i++)
-            {
-                Spells[i] = new Spell();
-            }
-            Magic = 30;
-            Description = description;
-            Level = 1;
-            Element = element;
-            IsDead = false;
-        }
-
-        public Fairy()
-        {
-        }
-
-        public static Fairy Default => new PlayerFairy();
-
-        public string Name { get; }
-
+        [DataMember]
         public int HealthPoint
         {
             set
@@ -49,33 +44,87 @@ namespace Assets.Scripts.GameLogic.DataModels
             }
             get => healthPoint;
         }
-
-        public Spell[] Spells { set; get; }
-
+        [DataMember]
         public int Magic { set; get; }
 
-        public string Description { get; }
-
-        public int Level { set; get; }
-
-        public int Score
+        private int experiencePoints;
+        [DataMember]
+        public int ExperiencePoints
         {
             //TODO организовать нормальное увеличение уровня
             set
             {
-                if (value - score > Level * 0.25)
+                if (value - experiencePoints > Level * 0.25)
                 {
                     Level += 1;
                 }
 
-                score = value;
+                experiencePoints = value;
             }
-            get => score;
+            get => experiencePoints;
+        }
+        public Fairy(string name, string description, Element element)
+        {
+            Name = name;
+            HealthPoint = 30;
+            Spells = new Spell[4];
+            for (var i = 0; i < 4; i++)
+            {
+                Spells[i] = new Spell("Empty Slot");
+            }
+            Magic = 30;
+            Description = description;
+            Level = 1;
+            Element = element;
+            IsDead = false;
         }
 
-        public Element Element { get; }
+        public Fairy(string name, string description, Element element, Spell[] spells)
+        {
+            Name = name;
+            HealthPoint = 30;
+            Spells = new Spell[4];
+            for (var i = 0; i < 2; i++)
+            {
+                Spells[i] = spells[i];
+            }
+            for (var i = 2; i < 4; i++)
+            {
+                Spells[i] = new Spell("Empty Slot");
+            }
+            Magic = 30;
+            Description = description;
+            Level = 1;
+            Element = element;
+            IsDead = false;
+        }
+
+        public Fairy()
+        {
+        }
+
         public bool IsDead { set; get; }
 
+        public string GetState()
+        {
+            return $"Magic: {Magic} HP: {HealthPoint}";
+        }
+
+        public virtual void AttackFairy(Fairy victim, OffensiveSpell spell)
+        {
+            //обработка на стихии должна быть
+            victim.HealthPoint -= spell.Damage;
+        }
+
+        //TODO для других(не просто атакующих) заклинаний
+        public virtual void CastSpell(Spell spell)
+        {
+        }
+
+        public virtual void FairyDeath()
+        {
+        }
+        public static Fairy Default => new PlayerFairy();
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
@@ -93,7 +142,7 @@ namespace Assets.Scripts.GameLogic.DataModels
                 return false;
             }
 
-            return Equals((Fairy) obj);
+            return Equals((Fairy)obj);
         }
 
         public override int GetHashCode()
@@ -102,25 +151,20 @@ namespace Assets.Scripts.GameLogic.DataModels
             {
                 var hashCode = Name != null ? Name.GetHashCode() : 0;
                 hashCode = (hashCode * 397) ^ (Description != null ? Description.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (int) Element;
+                hashCode = (hashCode * 397) ^ (int)Element;
                 return hashCode;
             }
         }
-
-        public virtual void AttackFairy(Fairy victim, OffensiveSpell spell)
+        public object Clone()
         {
-        }
+            var fairy = new Fairy(Name, Description, Element) { Spells = new Spell[4] };
+            for (var i = 0; i < 4; i++)
+            {
+                fairy.Spells[i] = Spells[i];
+            }
 
-        //TODO для других(не просто атакующих) заклинаний
-        public virtual void CastSpell(Spell spell)
-        {
+            return fairy;
         }
-
-        public virtual void FairyDeath()
-        {
-        }
-
-        public object Clone() => new Fairy(Name, Description, Element);
 
         public bool Equals(Fairy other)
         {

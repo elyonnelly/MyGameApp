@@ -18,6 +18,10 @@
 
         public static event PlayerWin PlayerWon;
 
+        public delegate void Attack(int forwardFairy, int victimFairy, string spell, string victim);
+
+        public static event Attack FairyAttack;
+
         public static void PublishFairyDeactivation(int position, string name)
         {
             DisableFairy?.Invoke(position, name);
@@ -36,6 +40,11 @@
         public static void PublishAddingSpell(int fairyPosition, int spellPosition, string name)
         {
             AddSpell?.Invoke(fairyPosition, spellPosition, name);
+        }
+
+        public static void PublishFairyAttack(int forwardFairy, int victimFairy, string spell, string victim)
+        {
+            FairyAttack?.Invoke(forwardFairy, victimFairy, spell, victim);
         }
 
         public static void OnPlayerWon()

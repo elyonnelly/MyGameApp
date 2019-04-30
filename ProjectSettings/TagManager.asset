@@ -10,6 +10,11 @@ TagManager:
   - Active Fairy
   - Allow Fairy
   - Active Spell
+  - Enemy
+  - Player Fairy
+  - Enemy Fairy
+  - Enemy Spell
+  - Player Spell
   layers:
   - Default
   - TransparentFX

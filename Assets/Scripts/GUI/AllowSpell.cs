@@ -6,7 +6,6 @@ namespace Assets.Scripts.GUI
     public class AllowSpell : MonoBehaviour
     {
         private Vector3 initialPosition;
-        private Vector3 screenPoint;
         private Vector3 offset;
         private bool isDrag;
         private bool isUsed;
@@ -29,7 +28,7 @@ namespace Assets.Scripts.GUI
                 isDrag = true;
             }
 
-            offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z + 10));
+            offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
 
         }
 
@@ -49,28 +48,32 @@ namespace Assets.Scripts.GUI
             {
                 return;
             }
-            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z + 10);
+            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y,  10);
             var curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
             transform.position = curPosition;
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
-            if (collider.gameObject.tag != "Active Spell")
+            if (collider.tag != "Active Spell")
+            {
+                return;
+            }
+            
+            var fairy = collider.GetComponentInParent<ActiveFairy>();
+            var spell = collider.GetComponent<ActiveSpell>();
+
+            if (fairy.IsEmpty)
+            {
+                return;
+            }
+            if (DataOfModels.Spells[name].MajorElement != DataOfModels.Fairies[fairy.name].Element &&
+                DataOfModels.Spells[name].MinorElement != DataOfModels.Fairies[fairy.name].Element)
             {
                 return;
             }
 
-            var fairy = collider.gameObject.transform.GetComponentInParent<ActiveFairy>();
-            var spell = collider.gameObject.GetComponent<ActiveSpell>();
-
-            if (DataOfModels.Spells[gameObject.name].MajorElement != DataOfModels.Fairies[fairy.name].Element &&
-                DataOfModels.Spells[gameObject.name].MinorElement != DataOfModels.Fairies[fairy.name].Element)
-            {
-                return;
-            }
-
-            if (!collider.gameObject.GetComponent<ActiveSpell>().IsEmpty)
+            if (!collider.GetComponent<ActiveSpell>().IsEmpty)
             {
                 EventAggregator.PublishRemovalSpell(fairy.Number, spell.Number, spell.gameObject.name);
             }
@@ -78,11 +81,6 @@ namespace Assets.Scripts.GUI
             
             ChangeActiveSpell(collider.gameObject, gameObject);
             MakeUsed();
-
-            foreach (var spelly in GameDataManager.Instance.PlayerData.ActiveFairies[fairy.Number].Spells)
-            {
-                Debug.Log(spelly.Name);
-            }
         }
 
         void ChangeActiveSpell(GameObject oldSpell, GameObject newSpell)
@@ -105,10 +103,6 @@ namespace Assets.Scripts.GUI
             {
                 isUsed = false;
             }
-        }
-        void Update()
-        {
-        
         }
     }
 }

@@ -8,7 +8,6 @@ namespace Assets.Scripts.GUI
         public bool IsUsed;
 
         private Vector3 initialPosition;
-        private Vector3 ScreenPoint;
         private Vector3 offset;
         private bool isDrag;
 
@@ -32,7 +31,7 @@ namespace Assets.Scripts.GUI
                 isDrag = true;
             }
 
-            offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, ScreenPoint.z + 10));
+            offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
         }
 
         private void OnMouseUp()
@@ -50,18 +49,17 @@ namespace Assets.Scripts.GUI
             {
                 return;
             }
-            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, ScreenPoint.z + 10);
+            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             var curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
             transform.position = curPosition;
         }
         private void OnTriggerEnter2D(Collider2D collider)
         {
-            Debug.ClearDeveloperConsole();
-            if (collider.gameObject.tag != "Active Fairy" || gameObject.tag != "Allow Fairy")
+            if (collider.tag != "Active Fairy" || tag != "Allow Fairy")
             {
                 return;
             }
-            var oldFairy = collider.gameObject.GetComponent<ActiveFairy>();
+            var oldFairy = collider.GetComponent<ActiveFairy>();
             var newFairy = gameObject;
             
             if (!oldFairy.IsEmpty)
@@ -71,11 +69,6 @@ namespace Assets.Scripts.GUI
             EventAggregator.PublishFairyActivation(oldFairy.Number, newFairy.name);
             ChangeFairy(oldFairy.gameObject, newFairy);
             MakeUsed();
-
-            foreach (var fairy in GameDataManager.Instance.PlayerData.ActiveFairies)
-            {
-                Debug.Log(fairy.Name);
-            }
         }
 
         private void ChangeFairy(GameObject oldFairy, GameObject newFairy)
@@ -96,7 +89,7 @@ namespace Assets.Scripts.GUI
 
         private void MakeUsed()
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
+            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
             transform.position = initialPosition;
             IsUsed = true;
             isDrag = false;

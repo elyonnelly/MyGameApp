@@ -1,50 +1,44 @@
-﻿using System.Collections.Generic;
-using Assets.Scripts.GameLogic.DataModels;
+﻿using Assets.Scripts.GameLogic.DataModels;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
-    class PlayerController : MonoBehaviour
+    public class EnemyController : MonoBehaviour
     {
+        // Start is called before the first frame update
         void Start()
         {
-            var fairies = new List<Fairy>();
-            var tag = string.Empty;
-            var tagSpell = string.Empty;
-            if (gameObject.tag == "Player")
-            {
-                 fairies = GameDataManager.Instance.PlayerData.ActiveFairies;
-                 tag = "Player Fairy";
-                 tagSpell = "Player Spell";
-            }
-            if (gameObject.tag == "Enemy")
-            {
-                fairies = GameDataManager.Instance.EnemyData.ActiveFairies;
-                tag = "Enemy Fairy";
-                tagSpell = "Enemy Spell";
-            }
+            var fairies = GameDataManager.Instance.EnemyData.ActiveFairies;
 
+            //Debug.Log(gameObject.transform.childCount);
             for (int i = 0; i < gameObject.transform.childCount; i++)
             {
                 var fairy = gameObject.transform.GetChild(i);
                 fairy.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairies[i].Name}/{fairies[i].Name}");
                 fairy.name = fairies[i].Name;
-                fairy.tag = tag;
+                //fairy.GetComponent<FairyComponent>().Fairy = GameDataManager.Instance.PlayerData.ActiveFairies[i];
                 var spells = fairies[i].Spells;
 
-                for (int j = 0; j < fairy.transform.childCount; j++)
+                for (var j = 0; j < fairy.transform.childCount; j++)
                 {
                     var spell = fairy.transform.GetChild(j);
 
+                    Debug.Log(spell.name);
                     if (DataOfModels.Spells.ContainsKey(spells[j].Name))
                     {
                         spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/{spells[j].Name}");
                         spell.name = spells[j].Name;
-                        spell.tag = tagSpell;
                     }
                 }
 
             }
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+        
         }
     }
 }
