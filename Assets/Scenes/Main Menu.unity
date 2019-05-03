@@ -326,7 +326,6 @@ GameObject:
   - component: {fileID: 537158566}
   - component: {fileID: 537158565}
   - component: {fileID: 537158564}
-  - component: {fileID: 537158567}
   m_Layer: 5
   m_Name: Choose Fairy Button
   m_TagString: Untagged
@@ -393,9 +392,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 537158567}
+      - m_Target: {fileID: 741177909}
         m_MethodName: LoadScene
-        m_Mode: 1
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -443,19 +442,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 537158562}
   m_CullTransparentMesh: 0
---- !u!114 &537158567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 537158562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65cc0c25ba8f2dc42aabd34409bda7b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SceneName: Choise Fairy Scene
 --- !u!1 &560729235
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,7 +521,6 @@ GameObject:
   - component: {fileID: 660488730}
   - component: {fileID: 660488729}
   - component: {fileID: 660488732}
-  - component: {fileID: 660488733}
   m_Layer: 5
   m_Name: Start a fight Button
   m_TagString: Untagged
@@ -603,9 +588,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 660488733}
+      - m_Target: {fileID: 741177909}
         m_MethodName: LoadScene
-        m_Mode: 1
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -672,19 +657,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &660488733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 660488727}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65cc0c25ba8f2dc42aabd34409bda7b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SceneName: Battlefield Scene
 --- !u!1001 &711591143
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -754,6 +726,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c45a0214b98c9842a539f0c68a8e026, type: 3}
+--- !u!1 &741177907 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4935505512307181592, guid: 7c45a0214b98c9842a539f0c68a8e026,
+    type: 3}
+  m_PrefabInstance: {fileID: 711591143}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &741177909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741177907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb47d569bb11424f84f70a79fe3562d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowFairies: {fileID: 0}
+  AllowSpells: {fileID: 0}
 --- !u!1 &1317884324
 GameObject:
   m_ObjectHideFlags: 0

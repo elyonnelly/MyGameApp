@@ -45,7 +45,6 @@ namespace Assets.Scripts.GUI
         }
         private void OnMouseDrag()
         {
-            //Debug.Log(ListOfFairies.tableOfFairies["Tadana"] == null);
             if (!IsAllow || IsUsed)
             {
                 return;

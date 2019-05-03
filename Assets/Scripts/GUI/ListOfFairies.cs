@@ -67,10 +67,6 @@ namespace Assets.Scripts.GUI
             tableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}");
         }
 
-        /*void Update()
-        {
-            Debug.Log(tableOfFairies["Tadana"] == null);
-        }*/
 
     }
 

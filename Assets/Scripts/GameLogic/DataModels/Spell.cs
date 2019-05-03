@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
-    [DataContract]
     public class Spell : ICloneable
     {
-        [DataMember]
+        [JsonProperty("Name")]
         public string Name { private set; get; }
 
-        [DataMember]
+        [JsonProperty("MajorElement")]
         public Element MajorElement { private set; get; }
 
-        [DataMember]
+
+        [JsonProperty("MinorElement")]
         public Element MinorElement { private set; get; }
 
-        [DataMember]
+
+        [JsonProperty("Mana")]
         public int Mana { private set; get; }
 
-        [DataMember]
+
+        [JsonProperty("Level")]
         public int Level { private set; get; }
 
         public Spell(Element majorElement, int level, string name, int mana, Element minorElement)

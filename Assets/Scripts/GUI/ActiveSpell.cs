@@ -59,7 +59,7 @@ namespace Assets.Scripts.GUI
 
         private void MakeEmpty()
         {
-            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptySpell");
+            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Spells Icon/EmptySpell");
             name = $"ActiveSpell{Number}";
             transform.position = initialPosition;
             IsEmpty = true;

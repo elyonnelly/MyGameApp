@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 545487e7cb59d9f4390ac403ac4d8771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Sparkle: {fileID: 5676443968677839914, guid: 5f2bcf3080397674ba493fc086ab9bf5, type: 3}
 --- !u!61 &2156064027261793373
 BoxCollider2D:
   m_ObjectHideFlags: 0

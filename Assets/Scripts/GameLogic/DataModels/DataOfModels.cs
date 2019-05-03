@@ -20,7 +20,6 @@ namespace Assets.Scripts.GameLogic.DataModels
                     foreach (var fairy in fairiesJson)
                     {
                         Fairies.Add(fairy.Name, fairy);
-                        //Debug.Log(fairy.EvolvesTo);
                     }
                 }
 
