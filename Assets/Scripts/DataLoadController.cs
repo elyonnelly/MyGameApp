@@ -1,35 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Assets.Scripts.GameLogic;
 using Assets.Scripts.GameLogic.DataModels;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
     public class DataLoadController : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Awake()
+        /*void Awake()
         {
-            //TODO добавить десериализацию данных о игроке
-            var activeFairies = new List<Fairy>
+            try
             {
-                (Fairy)DataOfModels.Fairies["Tadana"].Clone(),
-                (Fairy)DataOfModels.Fairies["Sillia"].Clone(),
-                (Fairy)DataOfModels.Fairies["Vesbat"].Clone(),
-                (Fairy)DataOfModels.Fairies["Rasrow"].Clone(),
-                (Fairy)DataOfModels.Fairies["Dracwin"].Clone()
-            };
-            var allowFairies = new List<Fairy>();
-            foreach (var fairy in DataOfModels.Fairies)
-            {
-                allowFairies.Add((Fairy)fairy.Value.Clone());
-            }
-            var player = new Player(activeFairies, allowFairies, 0);
+                using (var reader = new StreamReader(@"player.json"))
+                {
+                   //var player = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                   GameDataManager.Instance.PlayerData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                }
+                using (var reader = new StreamReader(@"enemy.json"))
+                {
+                    //var player = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                    GameDataManager.Instance.EnemyData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                }
 
-            //Собрали игрока из данных и загрузили в соответствующий объект
-            //GameObject.FindGameObjectWithTag("GameDataManager").GetComponent<GameDataManager>().PlayerData = player;
-            GameDataManager.Instance.PlayerData = player; //Так точно работает??
-        }
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+            }
+        }*/
 
     }
 }

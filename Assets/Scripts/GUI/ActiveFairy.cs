@@ -4,7 +4,6 @@ namespace Assets.Scripts.GUI
 {
     public class ActiveFairy : MonoBehaviour
     {
-        //Возможно можно убрать переменную IsEmpty;
         
 
         public bool IsEmpty;

@@ -1,32 +1,34 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
-    [DataContract]
+    //[DataContract]
     public class Fairy : ICloneable, IEquatable<Fairy>
     {
-        //[DataMember]
+
+        [JsonProperty("Name")]
         public string Name { private set; get; }
 
-        [DataMember]
+        [JsonProperty("Description")]
         public string Description { private set; get; }
 
-        [DataMember]
+        [JsonProperty("Element")]
         public Element Element { private set; get; }
 
-        [DataMember]
-        public int LevelForEvolution { private set; get; }
 
-        [DataMember]
+        [JsonProperty("EvolvesTo")]
         public string EvolvesTo { private set; get; }
 
-        [DataMember]
+        [JsonProperty("LevelForEvolution")]
+        public int LevelForEvolution { private set; get; }
+        //[DataMember]
         public Spell[] Spells { set; get; }
         public int Level { set; get; }
 
         private int healthPoint;
-        [DataMember]
+        //[DataMember]
         public int HealthPoint
         {
             set
@@ -44,11 +46,11 @@ namespace Assets.Scripts.GameLogic.DataModels
             }
             get => healthPoint;
         }
-        [DataMember]
+        //[DataMember]
         public int Magic { set; get; }
 
         private int experiencePoints;
-        [DataMember]
+        //[DataMember]
         public int ExperiencePoints
         {
             //TODO организовать нормальное увеличение уровня
@@ -101,8 +103,28 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public Fairy()
         {
+            HealthPoint = 30;
+            Spells = new Spell[4];
+            for (var i = 0; i < 4; i++)
+            {
+                Spells[i] = new Spell("Empty Slot");
+            }
+            Magic = 30;
+            Level = 1;
+            IsDead = false;
+            ExperiencePoints = 0;
         }
 
+        public Fairy(FairyData fairy)
+        {
+            Name = fairy.Name;
+            Description = fairy.Description;
+            Element = fairy.Element;
+            LevelForEvolution = fairy.LevelForEvolution;
+            EvolvesTo = fairy.EvolvesTo;
+        }
+
+        
         public bool IsDead { set; get; }
 
         public string GetState()
@@ -157,7 +179,12 @@ namespace Assets.Scripts.GameLogic.DataModels
         }
         public object Clone()
         {
-            var fairy = new Fairy(Name, Description, Element) { Spells = new Spell[4] };
+            var fairy = new Fairy(Name, Description, Element)
+            {
+                Spells = new Spell[4],
+                EvolvesTo = this.EvolvesTo,
+                LevelForEvolution = this.LevelForEvolution
+            };
             for (var i = 0; i < 4; i++)
             {
                 fairy.Spells[i] = Spells[i];

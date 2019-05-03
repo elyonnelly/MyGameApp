@@ -1,62 +1,63 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using Assets.Scripts.GameLogic;
 using Assets.Scripts.GameLogic.DataModels;
-using UnityEngine.SceneManagement;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
 
-    public class GameDataManager :  Singleton<GameDataManager>
+    public class GameDataManager : MonoBehaviour
     {
+        public static GameDataManager Instance;
         public Player PlayerData;
         public Player EnemyData;
 
-        void Awake()
+        private void Awake()
         {
-
-            //инициализация Player'sов в DataLoadController
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else if (Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            
             DontDestroyOnLoad(gameObject);
+
+            Initialize();
+
             EventAggregator.DisableFairy += OnDisableFairy;
             EventAggregator.ActivateFairy += OnActivateFairy;
             EventAggregator.RemoveSpell += OnRemoveSpell;
             EventAggregator.AddSpell += OnAddSpell;
             EventAggregator.FairyAttack += OnFairyAttack;
 
-            if (SceneManager.GetActiveScene().name == "Battlefield Scene")
+        }
+
+
+        void Initialize()
+        {
+            try
             {
-                InitializeBattleScene();
+                using (var reader = new StreamReader(@"player.json"))
+                {
+                    PlayerData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                }
+                using (var reader = new StreamReader(@"enemy.json"))
+                {
+                    EnemyData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
             }
         }
-
-        void InitializeBattleScene()
-        {
-            //это временно?
-            EnemyData = new Player();
-
-            var activeFairies = new List<Fairy>
-            {
-                (Fairy)DataOfModels.Fairies["Abery"].Clone(),
-                (Fairy)DataOfModels.Fairies["Sirael"].Clone(),
-                (Fairy)DataOfModels.Fairies["Worgot"].Clone(),
-                (Fairy)DataOfModels.Fairies["Manox"].Clone(),
-                (Fairy)DataOfModels.Fairies["Beltaur"].Clone()
-            };
-            var allowFairies = new List<Fairy>();
-            foreach (var fairy in DataOfModels.Fairies)
-            {
-                allowFairies.Add((Fairy)fairy.Value.Clone());
-            }
-
-            EnemyData.ActiveFairies = activeFairies;
-            EnemyData.AllowFairies = allowFairies;
-        }
-
-        void Update()
-        {
-
-        }
-
+        
         void OnFairyAttack(int forwardFairyNumber, int victimFairyNumber, string spellName, string victim)
         {
             if (victim == "Player")
@@ -100,16 +101,5 @@ namespace Assets.Scripts
             PlayerData.ActiveFairies[position] = (Fairy)(DataOfModels.Fairies[name]).Clone();
         }
 
-        public bool FairyActive(string name)
-        {
-            foreach (var fairy in PlayerData.ActiveFairies)
-            {
-                if (name == fairy.Name)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }

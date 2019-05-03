@@ -27,7 +27,7 @@ namespace Assets.Scripts.GUI
             for (int i = 0; i < gameObject.transform.childCount; i++)
             {
                 var fairy = gameObject.transform.GetChild(i);
-                fairy.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairies[i].Name}/{fairies[i].Name}");
+                fairy.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairies[i].Name}");
                 fairy.name = fairies[i].Name;
                 fairy.tag = tag;
                 var spells = fairies[i].Spells;

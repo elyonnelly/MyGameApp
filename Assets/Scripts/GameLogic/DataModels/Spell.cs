@@ -35,6 +35,11 @@ namespace Assets.Scripts.GameLogic.DataModels
             Name = name;
         }
 
+        public Spell()
+        {
+
+        }
+
         public static Spell Default => new Spell("Empty Slot");
 
         public object Clone()

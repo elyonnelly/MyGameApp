@@ -9,6 +9,7 @@ namespace Assets.Scripts
         {
             get
             {
+
                 if (instance == null)
                 {
                     instance = FindObjectOfType<T>();
@@ -20,6 +21,7 @@ namespace Assets.Scripts
 
                 return instance;
             }
+            protected set => instance = value;
         }
 
     }
