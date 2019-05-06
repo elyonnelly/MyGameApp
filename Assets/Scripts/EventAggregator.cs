@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Assets.Scripts
+﻿namespace Assets.Scripts
 {
     public class EventAggregator
     {
@@ -24,27 +22,30 @@ namespace Assets.Scripts
 
         public static event Attack FairyAttack;
 
-        public static void PublishFairyDeactivation(int position, string name)
+        public delegate void Move(string hero);
+
+        public static event Move StartMove;
+        public static void OnDisableFairy(int position, string name)
         {
             DisableFairy?.Invoke(position, name);
         }
 
-        public static void PublishFairyActivation(int position, string name)
+        public static void OnActivateFairy(int position, string name)
         {
             ActivateFairy?.Invoke(position, name);
         }
 
-        public static void PublishRemovalSpell(int fairyPosition, int spellPosition, string name)
+        public static void OnRemoveSpell(int fairyPosition, int spellPosition, string name)
         {
             RemoveSpell?.Invoke(fairyPosition, spellPosition, name);
         }
 
-        public static void PublishAddingSpell(int fairyPosition, int spellPosition, string name)
+        public static void OnAddSpell(int fairyPosition, int spellPosition, string name)
         {
             AddSpell?.Invoke(fairyPosition, spellPosition, name);
         }
 
-        public static void PublishFairyAttack(int forwardFairy, int victimFairy, string spell, string victim)
+        public static void OnFairyAttack(int forwardFairy, int victimFairy, string spell, string victim)
         {
             FairyAttack?.Invoke(forwardFairy, victimFairy, spell, victim);
         }
@@ -52,6 +53,11 @@ namespace Assets.Scripts
         public static void OnPlayerWon()
         {
             PlayerWon?.Invoke();
+        }
+
+        public static void OnStartMove(string hero)
+        {
+            StartMove?.Invoke(hero);
         }
     }
 }

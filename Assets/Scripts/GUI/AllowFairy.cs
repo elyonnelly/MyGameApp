@@ -64,9 +64,9 @@ namespace Assets.Scripts.GUI
             
             if (!oldFairy.IsEmpty)
             {
-                EventAggregator.PublishFairyDeactivation(oldFairy.Number, oldFairy.gameObject.name);
+                EventAggregator.OnDisableFairy(oldFairy.Number, oldFairy.gameObject.name);
             }
-            EventAggregator.PublishFairyActivation(oldFairy.Number, newFairy.name);
+            EventAggregator.OnActivateFairy(oldFairy.Number, newFairy.name);
             ChangeFairy(oldFairy.gameObject, newFairy);
             MakeUsed();
         }

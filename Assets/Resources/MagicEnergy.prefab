@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5780944908758133967}
   - component: {fileID: 4554563391860242825}
   - component: {fileID: 7870141126045296322}
+  - component: {fileID: 6054648839299334182}
   m_Layer: 0
   m_Name: MagicEnergy
   m_TagString: Player Spell
@@ -28,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5676443968677839914}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.15, y: 3.41, z: -1}
+  m_LocalPosition: {x: -1.01, y: 3.46, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -94,6 +95,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5623ee002d4294195ce483e31e4f7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Spell: 
+  AttackingFairy: 0
 --- !u!61 &4554563391860242825
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -141,3 +144,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &6054648839299334182
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5676443968677839914}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 519931e5de91c7d4abfbb28351810400, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

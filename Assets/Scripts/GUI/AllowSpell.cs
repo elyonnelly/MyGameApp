@@ -75,9 +75,9 @@ namespace Assets.Scripts.GUI
 
             if (!collider.GetComponent<ActiveSpell>().IsEmpty)
             {
-                EventAggregator.PublishRemovalSpell(fairy.Number, spell.Number, spell.gameObject.name);
+                EventAggregator.OnRemoveSpell(fairy.Number, spell.Number, spell.gameObject.name);
             }
-            EventAggregator.PublishAddingSpell(fairy.Number, spell.Number, gameObject.name);
+            EventAggregator.OnAddSpell(fairy.Number, spell.Number, gameObject.name);
             
             ChangeActiveSpell(collider.gameObject, gameObject);
             MakeUsed();

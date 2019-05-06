@@ -54,5 +54,10 @@ namespace Assets.Scripts.GUI
                 AllowSpells.transform.GetChild(i).gameObject.SetActive(true);
             }
         }
+
+        public void StartNewMove()
+        {
+            EventAggregator.OnStartMove("enemy"); //очевидно нажать на кнопку в данной ситуации может только игрок
+        }
     }
 }

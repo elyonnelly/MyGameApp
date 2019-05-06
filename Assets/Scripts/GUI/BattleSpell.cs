@@ -18,10 +18,23 @@ namespace Assets.Scripts.GUI
         void Start()
         {
             sparkles = new List<GameObject>();
+
+            EventAggregator.FairyAttack += EventAggregatorFairyAttack;
         }
+
+        private void EventAggregatorFairyAttack(int forwardFairy, int victimFairy, string spell, string victim)
+        {
+
+            foreach (var sparkle in sparkles)
+            {
+                Destroy(sparkle);
+            }
+
+            isDrag = false;
+        }
+
         void OnMouseDown()
         {
-            //Debug.Log(name);
             if (DataOfModels.Spells[name] is DefensiveSpell)
             {
                 return;
@@ -72,19 +85,6 @@ namespace Assets.Scripts.GUI
                 Destroy(sparkle);
             }
             isDrag = false;
-        }
-
-
-        private void OnTriggerEnter2D(Collider2D collider)
-        {
-            if (tag == "Player Spell" && collider.tag == "Enemy Fairy")
-            {
-                EventAggregator.PublishFairyAttack(transform.GetComponentInParent<FairyComponent>().Number,
-                                                   collider.GetComponent<FairyComponent>().Number, name,
-                                                   collider.transform.parent.tag);
-                transform.position = initialPosition;
-                isDrag = false;
-            }
         }
 
         void Update()

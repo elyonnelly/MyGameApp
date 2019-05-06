@@ -8,7 +8,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         {
             //TODO добавить обработку коэфициента в зависимости от стихии феи
             Magic -= spell.Mana;
-            victim.HealthPoint -= spell.Damage;
+            victim.HealthPoint -= (int)spell.Damage;
         }
 
         public override void CastSpell(Spell spell)

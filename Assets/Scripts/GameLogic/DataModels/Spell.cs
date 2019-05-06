@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
+
 namespace Assets.Scripts.GameLogic.DataModels
 {
     public class Spell : ICloneable
@@ -37,6 +38,11 @@ namespace Assets.Scripts.GameLogic.DataModels
             Name = name;
         }
 
+        public int Speed { private set; get; }
+        public double Effect { private set; get; }
+
+        public int Characteristic { private set; get; }
+
         public Spell()
         {
 
@@ -48,5 +54,9 @@ namespace Assets.Scripts.GameLogic.DataModels
         {
             return new Spell(MajorElement, Level, Name, Mana, MinorElement);
         }
+
+        
+
+
     }
 }

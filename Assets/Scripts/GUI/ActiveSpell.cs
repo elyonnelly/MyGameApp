@@ -39,7 +39,7 @@ namespace Assets.Scripts.GUI
             var fairy = transform.GetComponentInParent<ActiveFairy>();
             if (!IsEmpty)
             {
-                EventAggregator.PublishRemovalSpell(fairy.Number, Number, gameObject.name);
+                EventAggregator.OnRemoveSpell(fairy.Number, Number, gameObject.name);
             }
 
             MakeEmpty();

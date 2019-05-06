@@ -6,17 +6,18 @@ namespace Assets.Scripts.GameLogic.DataModels
     [DataContract]
     public enum Element
     {
-        Water,
+        Nature,
         Air,
+        Water,
+        Ligth,
+        Energy,
+        Psi,
         Stone,
         Ice,
-        Metal,
         Fire,
-        Nature,
-        Psi,
-        Light,
         Dark,
         Chaos,
-        Energy
+        Metal
+
     }
 }

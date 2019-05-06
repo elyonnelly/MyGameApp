@@ -47,7 +47,7 @@ namespace Assets.Scripts.GUI
 
             if (!IsEmpty)
             {
-                EventAggregator.PublishFairyDeactivation(Number, name);
+                EventAggregator.OnDisableFairy(Number, name);
             }
 
             MakeEmpty();

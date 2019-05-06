@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Assets.Scripts.GameLogic.DataModels
@@ -23,13 +22,17 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         [JsonProperty("LevelForEvolution")]
         public int LevelForEvolution { private set; get; }
+
+        //[JsonProperty("HitPoints")]
+        public int HitPoints { private set; get; }
+
         //[DataMember]
         public Spell[] Spells { set; get; }
         public int Level { set; get; }
 
-        private int healthPoint;
+        private double healthPoint;
         //[DataMember]
-        public int HealthPoint
+        public double HealthPoint
         {
             set
             {
@@ -115,15 +118,6 @@ namespace Assets.Scripts.GameLogic.DataModels
             ExperiencePoints = 0;
         }
 
-        public Fairy(FairyData fairy)
-        {
-            Name = fairy.Name;
-            Description = fairy.Description;
-            Element = fairy.Element;
-            LevelForEvolution = fairy.LevelForEvolution;
-            EvolvesTo = fairy.EvolvesTo;
-        }
-
         
         public bool IsDead { set; get; }
 
@@ -134,10 +128,20 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public virtual void AttackFairy(Fairy victim, OffensiveSpell spell)
         {
-            //обработка на стихии должна быть
-            victim.HealthPoint -= spell.Damage;
+            //обработка на стихии
+
+            var effectiveness = DataOfModels.TableOfEffectiveness[(int) Element, (int) victim.Element];
+
+            var damage = effectiveness == -1 ? spell.Damage * 10 - 0.8 * spell.Damage : 
+                            effectiveness == 1 ? spell.Damage * 10 + 0.8 * spell.Damage : spell.Damage;
+            victim.HealthPoint -= (int)damage;
+
+            //и обработка на эффект заклинания
+
+            
         }
 
+        
         //TODO для других(не просто атакующих) заклинаний
         public virtual void CastSpell(Spell spell)
         {
@@ -146,6 +150,15 @@ namespace Assets.Scripts.GameLogic.DataModels
         public virtual void FairyDeath()
         {
         }
+
+        public string Wound { set; get; }
+
+        public double RateFactor;
+        public double DamageCoefficient;
+        public bool AbilityToCriticalHit;
+        public bool AbilityToTakeCriticalHit;
+        public double DamageReduction;
+
         public static Fairy Default => new PlayerFairy();
         public override bool Equals(object obj)
         {
