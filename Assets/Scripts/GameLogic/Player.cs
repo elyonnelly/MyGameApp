@@ -19,6 +19,9 @@ namespace Assets.Scripts.GameLogic
 
         public List<Fairy> ActiveFairies { get; set; }
         public List<Fairy> AllowFairies { get; set; }
+        public List<DefensiveSpell> AllowDefensiveSpells { get; set; }
+
+        public List<OffensiveSpell> AllowOffensiveSpells { get; set; }
         public int CurrentStage { set; get; }
 
         public void AddActiveFairy(int position, Fairy newFairy)

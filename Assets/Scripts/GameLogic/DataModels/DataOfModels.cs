@@ -23,42 +23,30 @@ namespace Assets.Scripts.GameLogic.DataModels
                     }
                 }
 
+                using (var reader = new StreamReader(@"Offensive spells.json"))
+                {
+                    OffensiveSpells = JsonConvert.DeserializeObject<Dictionary<string, OffensiveSpell>>(reader.ReadLine());
+                    
+                }
+
+                using (var reader = new StreamReader(@"Defensive spells.json"))
+                {
+                    DefensiveSpells = JsonConvert.DeserializeObject<Dictionary<string, DefensiveSpell>>(reader.ReadLine());
+                }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Debug.Log(ex.Message);
             }
         }
 
+        public static Dictionary<string, OffensiveSpell> Spells { get; set; }
+    
 
-        public static Dictionary<string, Spell> Spells = new Dictionary<string, Spell>()
-        {
-            {
-                "Small Spirit", new OffensiveSpell(Element.Nature, 1, "Small Spirit", 1, 2, 5, Element.Water)
-            },
-            {
-                "Insanity", new OffensiveSpell(Element.Stone, 2, "Insanity", 2, 2, 2, Element.Fire)
-            },
-            {
-                "Telekinesis", new DefensiveSpell(Element.Nature, 1, "Telekinesis", 0, Element.Water)
-            },
-            {
-                "Quake of Power", new DefensiveSpell(Element.Stone, 2, "Quake of Power", 2, Element.Fire)
-            },
-            {
-                "Chaos Lightning", new OffensiveSpell(Element.Psi, 1, "Chaos Lightning", 3, 2, 2, Element.Chaos)
-            },
-            {
-                "Spirit of Chaos", new OffensiveSpell(Element.Air, 2, "Spirit of Chaos", 4, 1, 1, Element.Dark)
-            },
-            {
-                "Dance of Chaos", new DefensiveSpell(Element.Psi, 1, "Dance of Chaos", 5, Element.Chaos)
-            },
-            {
-                "Confused Spirit", new DefensiveSpell(Element.Air, 2, "Confused Spirit", 0, Element.Dark)
-            },
+        public static Dictionary<string, OffensiveSpell> OffensiveSpells = new Dictionary<string, OffensiveSpell>();
 
-        };
+        public static Dictionary<string, DefensiveSpell> DefensiveSpells = new Dictionary<string, DefensiveSpell>();
+
 
         public static Dictionary<string, Fairy> Fairies = new Dictionary<string, Fairy>();
 

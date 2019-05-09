@@ -9,6 +9,9 @@ namespace Assets.Scripts.GameLogic.DataModels
         [JsonProperty("Name")]
         public string Name { private set; get; }
 
+        [JsonProperty("Mana")]
+        public int Mana { private set; get; }
+
         [JsonProperty("MajorElement")]
         public Element MajorElement { private set; get; }
 
@@ -16,14 +19,20 @@ namespace Assets.Scripts.GameLogic.DataModels
         [JsonProperty("MinorElement")]
         public Element MinorElement { private set; get; }
 
-
-        [JsonProperty("Mana")]
-        public int Mana { private set; get; }
-
-
         [JsonProperty("Level")]
         public int Level { private set; get; }
 
+        
+        [JsonProperty("Effect")]
+        public double Effect { private set; get; }
+
+        [JsonProperty("Characteristic")]
+        public double Characteristic { private set; get; }
+
+        [JsonProperty("Info")]
+        public string Info { private set; get; }
+
+        
         public Spell(Element majorElement, int level, string name, int mana, Element minorElement)
         {
             Name = name;
@@ -38,11 +47,6 @@ namespace Assets.Scripts.GameLogic.DataModels
             Name = name;
         }
 
-        public int Speed { private set; get; }
-        public double Effect { private set; get; }
-
-        public int Characteristic { private set; get; }
-
         public Spell()
         {
 
@@ -55,7 +59,7 @@ namespace Assets.Scripts.GameLogic.DataModels
             return new Spell(MajorElement, Level, Name, Mana, MinorElement);
         }
 
-        
+
 
 
     }

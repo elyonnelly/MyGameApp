@@ -36,9 +36,15 @@ namespace Assets.Scripts.GUI
                 {
                     var spell = fairy.transform.GetChild(j);
 
-                    if (DataOfModels.Spells.ContainsKey(spells[j].Name))
+                    if (DataOfModels.OffensiveSpells.ContainsKey(spells[j].Name))
                     {
-                        spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/{spells[j].Name}");
+                        spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/Offensive Spells/{spells[j].Name}");
+                        spell.name = spells[j].Name;
+                        spell.tag = tagSpell;
+                    }
+                    if (DataOfModels.DefensiveSpells.ContainsKey(spells[j].Name))
+                    {
+                        spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/Defensive Spells/{spells[j].Name}");
                         spell.name = spells[j].Name;
                         spell.tag = tagSpell;
                     }

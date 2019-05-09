@@ -35,10 +35,6 @@ namespace Assets.Scripts.GUI
 
         void OnMouseDown()
         {
-            if (DataOfModels.Spells[name] is DefensiveSpell)
-            {
-                return;
-            }
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             if (!isDrag)
             {
@@ -52,10 +48,6 @@ namespace Assets.Scripts.GUI
 
         private void OnMouseDrag()
         {
-            if (DataOfModels.Spells[name] is DefensiveSpell)
-            {
-                return;
-            }
             if (!isDrag)
             {
                 return;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Assets.Scripts.GameLogic;
+using Assets.Scripts.GameLogic.DataModels;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -38,6 +39,17 @@ namespace Assets.Scripts
                 using (var reader = new StreamReader(@"player.json"))
                 {
                     PlayerData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                    PlayerData.AllowDefensiveSpells = new System.Collections.Generic.List<DefensiveSpell>();
+                    PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<OffensiveSpell>();
+                    foreach (var spell in DataOfModels.DefensiveSpells.Values)
+                    {
+                        PlayerData.AllowDefensiveSpells.Add(spell);
+                    }
+
+                    foreach (var spell in DataOfModels.OffensiveSpells.Values)
+                    {
+                        PlayerData.AllowOffensiveSpells.Add(spell);
+                    }
                 }
                 using (var reader = new StreamReader(@"enemy.json"))
                 {

@@ -1,18 +1,23 @@
-﻿using Assets.Scripts.GameLogic.DataModels;
+﻿using System;
+using Assets.Scripts.GameLogic.DataModels;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
     public class AllowSpell : MonoBehaviour
     {
+        public Text Info;
         private Vector3 initialPosition;
         private Vector3 offset;
         private bool isDrag;
         private bool isUsed;
 
+       
         void Start()
         {
             EventAggregator.RemoveSpell += MakeUnused;
+            Info = GameObject.FindGameObjectWithTag("SpellInfo").GetComponent<Text>();
         }
 
         void OnMouseDown()
@@ -30,6 +35,23 @@ namespace Assets.Scripts.GUI
 
             offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
 
+            ViewInfo();
+
+        }
+
+        private void ViewInfo()
+        {
+            if (DataOfModels.OffensiveSpells.ContainsKey(name))
+            {
+                var spell = DataOfModels.OffensiveSpells[name];
+                Info.text = $"{spell.Name}\n\nOffensive Spell of \n{spell.MajorElement.ToString()}\n{spell.Info}\nLevel: {spell.Level} Damage:{spell.Damage} Mana:{spell.Mana}";
+            }
+
+            if (DataOfModels.DefensiveSpells.ContainsKey(name))
+            {
+                var spell = DataOfModels.DefensiveSpells[name];
+                Info.text = $"{spell.Name}\n\nDefensive Spell of\n{spell.MajorElement.ToString()}\n{spell.Info}\nLevel: {spell.Level} Mana:{spell.Mana}";
+            }
         }
 
         private void OnMouseUp()
@@ -63,14 +85,45 @@ namespace Assets.Scripts.GUI
             var fairy = collider.GetComponentInParent<ActiveFairy>();
             var spell = collider.GetComponent<ActiveSpell>();
 
+            if (spell.Type == "Offensive" && DataOfModels.DefensiveSpells.ContainsKey(name) ||
+                spell.Type == "Defensive" && DataOfModels.OffensiveSpells.ContainsKey(name))
+            {
+                return;
+            }
+            
             if (fairy.IsEmpty)
             {
                 return;
             }
-            if (DataOfModels.Spells[name].MajorElement != DataOfModels.Fairies[fairy.name].Element &&
-                DataOfModels.Spells[name].MinorElement != DataOfModels.Fairies[fairy.name].Element)
+
+            if (DataOfModels.OffensiveSpells.ContainsKey(name))
             {
-                return;
+                var offensiveSpell = DataOfModels.OffensiveSpells[name];
+                if (offensiveSpell.MajorElement != DataOfModels.Fairies[fairy.name].Element &&
+                    offensiveSpell.MinorElement != DataOfModels.Fairies[fairy.name].Element)
+                {
+                    return;
+                }
+
+                if (Math.Ceiling( DataOfModels.Fairies[fairy.name].Level / 3.0) < offensiveSpell.Level)
+                {
+                    return;
+                }
+            }
+
+            if (DataOfModels.DefensiveSpells.ContainsKey(name))
+            {
+                var defensiveSpell = DataOfModels.DefensiveSpells[name];
+                if (defensiveSpell.MajorElement != DataOfModels.Fairies[fairy.name].Element &&
+                    defensiveSpell.MinorElement != DataOfModels.Fairies[fairy.name].Element)
+                {
+                    return;
+                }
+                if (Math.Ceiling(DataOfModels.Fairies[fairy.name].Level / 3.0) < defensiveSpell.Level)
+                {
+                    return;
+                }
+
             }
 
             if (!collider.GetComponent<ActiveSpell>().IsEmpty)

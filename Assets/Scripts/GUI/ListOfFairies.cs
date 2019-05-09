@@ -6,23 +6,23 @@ namespace Assets.Scripts.GUI
     public class ListOfFairies : MonoBehaviour
     {
         public GameObject Fairy;
-        public static Dictionary<string, GameObject> tableOfFairies;
+        public Dictionary<string, GameObject> TableOfFairies;
 
         private void Awake()
         {
             EventAggregator.DisableFairy += UpdateTable;
 
-            tableOfFairies = new Dictionary<string, GameObject>();
+            TableOfFairies = new Dictionary<string, GameObject>();
             FillTableOfFairies();
 
             var player = GameDataManager.Instance.PlayerData;
 
             foreach (var fairy in player.AllowFairies)
             {
-                if (tableOfFairies.ContainsKey(fairy.Name))
+                if (TableOfFairies.ContainsKey(fairy.Name))
                 {
-                    tableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}");
-                    tableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsAllow = true;
+                    TableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}");
+                    TableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsAllow = true;
                 }
 
 
@@ -30,8 +30,8 @@ namespace Assets.Scripts.GUI
 
             foreach (var fairy in player.ActiveFairies)
             {
-                tableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/EmptyPrefab");
-                tableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsUsed = true;
+                TableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/EmptyPrefab");
+                TableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsUsed = true;
             }
 
 
@@ -41,14 +41,30 @@ namespace Assets.Scripts.GUI
         {
             var fairies = GameDataManager.Instance.PlayerData.AllowFairies;
             var count = 0;
+            var flag = false;
 
-            for (var y = transform.position.y; y > transform.position.y - 6; y -= 1)
+            while (count < fairies.Count)
             {
-                for (var x = transform.position.x; x < transform.position.x + 6; x += 1)
+                for (var y = transform.position.y; y > transform.position.y - 6; y -= 1)
                 {
-                    tableOfFairies.Add(fairies[count].Name, CreateNewFairyObject(fairies[count].Name, new Vector3(x, y, -1)));
-                    count++;
+                    for (var x = transform.position.x; x < transform.position.x + 6; x += 1)
+                    {
+                        if (count >= fairies.Count)
+                        {
+                            flag = true;
+                            break;
+                        }
+
+                        TableOfFairies.Add(fairies[count].Name, CreateNewFairyObject(fairies[count].Name, new Vector3(x, y, -1)));
+                        count++;
+                    }
+
+                    if (flag)
+                    {
+                        break;
+                    }
                 }
+
             }
 
         }
@@ -64,7 +80,7 @@ namespace Assets.Scripts.GUI
 
         private void UpdateTable(int position, string fairyName)
         {
-            tableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}");
+            TableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}");
         }
 
 

@@ -63,7 +63,7 @@ namespace Assets.Scripts
             {
                 var victimFairy = player.ActiveFairies[forwardFairyNumber];
                 var forwardFairy = enemy.ActiveFairies[victimFairyNumber];
-                var spell = DataOfModels.Spells[spellName];
+                var spell = DataOfModels.OffensiveSpells[spellName];
 
                 forwardFairy.AttackFairy(victimFairy, (OffensiveSpell)spell);
             }
@@ -72,7 +72,7 @@ namespace Assets.Scripts
             {
                 var victimFairy = enemy.ActiveFairies[forwardFairyNumber];
                 var forwardFairy = player.ActiveFairies[victimFairyNumber];
-                var spell = DataOfModels.Spells[spellName];
+                var spell = DataOfModels.OffensiveSpells[spellName];
 
                 forwardFairy.AttackFairy(victimFairy, (OffensiveSpell)spell);
             }
@@ -206,7 +206,7 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Restores damage points
+        /// Restores hit points
         /// </summary>
         /// <param name="attacker"></param>
         /// <param name="victim"></param>

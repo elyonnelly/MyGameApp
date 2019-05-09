@@ -6,6 +6,7 @@ namespace Assets.Scripts.GUI
     {
         public bool IsEmpty;
         public int Number;
+        public string Type;
 
         public bool isDrag;
 

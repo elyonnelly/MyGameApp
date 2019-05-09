@@ -15,6 +15,10 @@ TagManager:
   - Enemy Fairy
   - Enemy Spell
   - Player Spell
+  - SpellInfo
+  - FairyInfo
+  - FairyDescription
+  - FairyPhoto
   layers:
   - Default
   - TransparentFX

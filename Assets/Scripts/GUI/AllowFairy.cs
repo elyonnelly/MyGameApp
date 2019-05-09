@@ -1,9 +1,14 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.GameLogic.DataModels;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
     public class AllowFairy : MonoBehaviour
     {
+        public Text Info;
+        public Text Description;
+        public SpriteRenderer Photo;
         public bool IsAllow;
         public bool IsUsed;
 
@@ -14,6 +19,10 @@ namespace Assets.Scripts.GUI
         private void Start()
         {
             EventAggregator.DisableFairy += MakeUnused;
+            Info = GameObject.FindGameObjectWithTag("FairyInfo").GetComponent<Text>();
+            Description = GameObject.FindGameObjectWithTag("FairyDescription").GetComponent<Text>();
+            Photo = GameObject.FindGameObjectWithTag("FairyPhoto").GetComponent<SpriteRenderer>();
+
         }
         private void OnMouseDown()
         {
@@ -32,6 +41,15 @@ namespace Assets.Scripts.GUI
             }
 
             offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
+            ViewInfo();
+        }
+
+        private void ViewInfo()
+        {
+            var fairy = DataOfModels.Fairies[name];
+            Photo.sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/Description Icon/{fairy.Name}");
+            Info.text = $"Level:  {fairy.Level} \n Mana: {fairy.Magic}\n Health Points: {fairy.HealthPoint}";
+            Description.text = $"{fairy.Name}\n\n{fairy.Description}\n ";
         }
 
         private void OnMouseUp()
