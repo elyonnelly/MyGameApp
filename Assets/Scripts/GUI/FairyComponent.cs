@@ -12,7 +12,6 @@ namespace Assets.Scripts.GUI
         private Fairy fairy;
         void Start()
         {
-
             fairy = GameDataManager.Instance.PlayerData.ActiveFairies[Number];
             FairyInfo.text = fairy.GetState();
         }

@@ -2,6 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.GUI
@@ -13,6 +14,11 @@ namespace Assets.Scripts.GUI
         public int PageSpell;
         public int PageFairy;
         public string CurrentEssence;
+
+        public Text FairyInfo;
+        public Text FairyDescription;
+        public Text SpellInfo;
+        public SpriteRenderer FairyPhoto;
 
         public void FinishTheMove()
         {
@@ -43,6 +49,7 @@ namespace Assets.Scripts.GUI
         public void DisplayAllowFairies()
         {
             CurrentEssence = "fairy";
+            SpellInfo.text = "";
 
             for (int i = 0; i < AllowSpells.transform.childCount; i++)
             {
@@ -55,6 +62,10 @@ namespace Assets.Scripts.GUI
         public void DisplayAllowSpells()
         {
             CurrentEssence = "spell";
+            FairyInfo.text = "";
+            FairyDescription.text = "";
+            FairyPhoto.sprite = null;
+
             for (int i = 0; i < AllowFairies.transform.childCount; i++)
             {
                 AllowFairies.transform.GetChild(i).gameObject.SetActive(false);

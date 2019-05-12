@@ -29,6 +29,10 @@ namespace Assets.Scripts.GUI
         {
             var spellObject = fairy.transform.GetChild(index);
             spellObject.name = name;
+            if (name != "Empty Slot")
+            {
+                spellObject.GetComponent<ActiveSpell>().IsEmpty = false;
+            }
             spellObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/{type}/{name}");
         }
 

@@ -41,6 +41,7 @@ namespace Assets.Scripts.GUI
             var position = new Vector3();
             position = transform.GetChild(0).name == spell ? transform.GetChild(0).transform.position : transform.GetChild(2).transform.position;
             var victimPosition = GameObject.FindGameObjectWithTag("Player").transform.GetChild(victimFairy).transform.position;
+            Debug.Log(victimPosition);
             var directionVector = (victimPosition - transform.position) /5;
 
             StartCoroutine(ShowMagic(position, directionVector, victimPosition));

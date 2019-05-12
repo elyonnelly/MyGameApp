@@ -6,7 +6,7 @@ namespace Assets.Scripts.GUI
 {
     public class EnemyController : MonoBehaviour
     {
-        void Start()
+        void Awake()
         {
             var fairies = new List<Fairy>();
             var tag = string.Empty;

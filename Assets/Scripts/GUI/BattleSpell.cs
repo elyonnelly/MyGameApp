@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.GameLogic.DataModels;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
@@ -8,6 +9,7 @@ namespace Assets.Scripts.GUI
     {
         // Start is called before the first frame update
         public GameObject Sparkle;
+        public GameObject Mana;
 
         private bool isDrag;
         private bool isEmpty;
@@ -16,12 +18,18 @@ namespace Assets.Scripts.GUI
         private List<GameObject> sparkles;
         private int deltaTime = 0;
 
+
         void Start()
         {
             sparkles = new List<GameObject>();
             if (name == "Empty Slot")
             {
                 isEmpty = true;
+            }
+
+            if (DataOfModels.OffensiveSpells.ContainsKey(name))
+            {
+                Mana.GetComponent<Text>().text = DataOfModels.OffensiveSpells[name].Mana.ToString();
             }
 
             EventAggregator.FairyAttack += EventAggregatorFairyAttack;

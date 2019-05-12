@@ -73,6 +73,7 @@
      <Compile Include="Assets\Scripts\GUI\AllowFairy.cs" />
      <Compile Include="Assets\Scripts\GUI\AllowSpell.cs" />
      <Compile Include="Assets\Scripts\GUI\BattleDefensiveSpell.cs" />
+     <Compile Include="Assets\Scripts\GUI\BattleEnemySpell.cs" />
      <Compile Include="Assets\Scripts\GUI\BattleSpell.cs" />
      <Compile Include="Assets\Scripts\GUI\EnemyController.cs" />
      <Compile Include="Assets\Scripts\GUI\EnemyFairyComponent.cs" />

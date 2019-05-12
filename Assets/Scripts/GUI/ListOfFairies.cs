@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.GUI
@@ -7,9 +8,11 @@ namespace Assets.Scripts.GUI
     {
         public GameObject Fairy;
         public Dictionary<string, GameObject> TableOfFairies;
+        private Guid guid = Guid.NewGuid();
 
         private void Awake()
         {
+            Debug.Log(guid);
             EventAggregator.DisableFairy += UpdateTable;
 
             TableOfFairies = new Dictionary<string, GameObject>();
@@ -24,8 +27,6 @@ namespace Assets.Scripts.GUI
                     TableOfFairies[fairy.Name].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}");
                     TableOfFairies[fairy.Name].GetComponent<AllowFairy>().IsAllow = true;
                 }
-
-
             }
 
             foreach (var fairy in player.ActiveFairies)
@@ -80,12 +81,17 @@ namespace Assets.Scripts.GUI
 
         private void UpdateTable(int position, string fairyName)
         {
+            Debug.Log(guid);
             Debug.Log(TableOfFairies[fairyName] == null);
             Debug.Log(fairyName);
             TableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}");
         }
 
+        private void OnDisable()
+        {
+            EventAggregator.DisableFairy -= UpdateTable;
 
+        }
     }
 
 }

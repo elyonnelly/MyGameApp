@@ -19,6 +19,7 @@ TagManager:
   - FairyInfo
   - FairyDescription
   - FairyPhoto
+  - Canvas
   layers:
   - Default
   - TransparentFX

@@ -13,24 +13,28 @@ namespace Assets.Scripts
         public static GameDataManager Instance;
         public Player PlayerData;
         public Player EnemyData;
+        private Guid guid = Guid.NewGuid();
         
         private void Awake()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else if (Instance != this)
-            {
-                Destroy(gameObject);
-            }
+            Debug.Log(guid);
+
+            Debug.Log(Instance?.guid);
+            Instance?.Destroy();
+            Instance = this;
             
             DontDestroyOnLoad(gameObject);
 
             Initialize();
+            Debug.Log(guid);
 
+            Debug.Log(Instance?.guid);
         }
 
+        void Destroy()
+        {
+            Destroy(gameObject);
+        }
 
         void Initialize()
         {

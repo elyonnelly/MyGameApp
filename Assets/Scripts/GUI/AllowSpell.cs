@@ -20,6 +20,11 @@ namespace Assets.Scripts.GUI
             Info = GameObject.FindGameObjectWithTag("SpellInfo").GetComponent<Text>();
         }
 
+        void OnDestroy()
+        {
+            //EventAggregator.RemoveSpell -= MakeUnused;
+        }
+
         void OnMouseDown()
         {
             if (isUsed)
@@ -60,6 +65,8 @@ namespace Assets.Scripts.GUI
             {
                 return;
             }
+
+            initialPosition.z += 2;
             transform.position = initialPosition;
             isDrag = false;
         }
@@ -145,6 +152,7 @@ namespace Assets.Scripts.GUI
 
         void MakeUsed()
         {
+            initialPosition.z += 2;
             transform.position = initialPosition;
             isUsed = true;
             isDrag = false;

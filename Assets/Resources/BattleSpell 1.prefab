@@ -142,3 +142,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sparkle: {fileID: 5676443968677839914, guid: 5f2bcf3080397674ba493fc086ab9bf5, type: 3}
+  Mana: {fileID: 6570017635135129945, guid: 3840f47c5c8305e4e8d8f95ed2a9633c, type: 3}

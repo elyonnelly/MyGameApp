@@ -113,6 +113,9 @@ namespace Assets.Scripts.GUI
             isDrag = false;
         }
 
-
+        private void OnDestroy()
+        {
+            EventAggregator.DisableFairy -= MakeUnused;
+        }
     }
 }
