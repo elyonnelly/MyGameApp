@@ -15,7 +15,7 @@ namespace Assets.Scripts.GUI
             if (tag == "Player Spell" && collider.tag == "Enemy Fairy")
             {
                 EventAggregator.OnFairyAttack(AttackingFairy,
-                                                   collider.GetComponent<FairyComponent>().Number, Spell,
+                                                   collider.GetComponent<EnemyFairyComponent>().Number, Spell,
                                                    collider.transform.parent.tag);
             }
         }

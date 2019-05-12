@@ -80,6 +80,8 @@ namespace Assets.Scripts.GUI
 
         private void UpdateTable(int position, string fairyName)
         {
+            Debug.Log(TableOfFairies[fairyName] == null);
+            Debug.Log(fairyName);
             TableOfFairies[fairyName].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairyName}");
         }
 

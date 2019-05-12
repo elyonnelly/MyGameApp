@@ -41,7 +41,7 @@ namespace Assets.Scripts.GUI
                             flag = true;
                             break;
                         }
-                        TableOfSpells.Add(offensiveSpells[count].Name, CreateNewSpellSprite(offensiveSpells[count].Name, new Vector3(x, y, -1), "off"));
+                        TableOfSpells.Add(offensiveSpells[count], CreateNewSpellSprite(offensiveSpells[count], new Vector3(x, y, -1), "off"));
                        
                         count++;
                     }
@@ -59,7 +59,7 @@ namespace Assets.Scripts.GUI
 
                 if (count < defensiveSpells.Count - 1)
                 {
-                    TableOfSpells.Add(defensiveSpells[count].Name, CreateNewSpellSprite(defensiveSpells[count].Name, new Vector3(x, y1, -1), "def"));
+                    TableOfSpells.Add(defensiveSpells[count], CreateNewSpellSprite(defensiveSpells[count], new Vector3(x, y1, -1), "def"));
                 }
                 count++;
             }
@@ -72,7 +72,7 @@ namespace Assets.Scripts.GUI
                     
                     if (count < defensiveSpells.Count - 1)
                     {
-                        TableOfSpells.Add(defensiveSpells[count].Name, CreateNewSpellSprite(defensiveSpells[count].Name, new Vector3(x, y, -1), "def"));
+                        TableOfSpells.Add(defensiveSpells[count], CreateNewSpellSprite(defensiveSpells[count], new Vector3(x, y, -1), "def"));
                     }
                     count++;
                 }
@@ -86,7 +86,7 @@ namespace Assets.Scripts.GUI
                     {
                         if (count < defensiveSpells.Count - 1)
                         {
-                            TableOfSpells.Add(defensiveSpells[count].Name, CreateNewSpellSprite(defensiveSpells[count].Name, new Vector3(x, y, -1), "def"));
+                            TableOfSpells.Add(defensiveSpells[count], CreateNewSpellSprite(defensiveSpells[count], new Vector3(x, y, -1), "def"));
                         }
                         count++;
                     }

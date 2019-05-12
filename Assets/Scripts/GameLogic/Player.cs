@@ -19,9 +19,9 @@ namespace Assets.Scripts.GameLogic
 
         public List<Fairy> ActiveFairies { get; set; }
         public List<Fairy> AllowFairies { get; set; }
-        public List<DefensiveSpell> AllowDefensiveSpells { get; set; }
+        public List<string> AllowDefensiveSpells { get; set; }
 
-        public List<OffensiveSpell> AllowOffensiveSpells { get; set; }
+        public List<string> AllowOffensiveSpells { get; set; }
         public int CurrentStage { set; get; }
 
         public void AddActiveFairy(int position, Fairy newFairy)
@@ -36,12 +36,12 @@ namespace Assets.Scripts.GameLogic
 
         public void AddActiveSpell(int fairyPosition, int spellPosition, Spell spell)
         {
-            ActiveFairies[fairyPosition].Spells[spellPosition] = spell;
+            ActiveFairies[fairyPosition].Spells[spellPosition] = spell.Name;
         }
 
         public void RemoveActiveSpell(int fairyPosition, int spellPosition, Spell spell)
         {
-            ActiveFairies[fairyPosition].Spells[spellPosition] = Spell.Default;
+            ActiveFairies[fairyPosition].Spells[spellPosition] = "Empty Slot";
         }
 
 

@@ -21,6 +21,7 @@
         public delegate void Attack(int forwardFairy, int victimFairy, string spell, string victim);
 
         public static event Attack FairyAttack;
+        public static event Attack EnemyAttack;
 
         public delegate void Move(string hero);
 
@@ -58,6 +59,11 @@
         public static void OnStartMove(string hero)
         {
             StartMove?.Invoke(hero);
+        }
+
+        public static void OnEnemyAttack(int forwardfairy, int victimfairy, string spell, string victim)
+        {
+            EnemyAttack?.Invoke(forwardfairy, victimfairy, spell, victim);
         }
     }
 }

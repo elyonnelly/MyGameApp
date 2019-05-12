@@ -15,10 +15,10 @@ namespace Assets.Scripts.GUI
                 fairyObject.name = fairy.Name;
                 fairyObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/{fairy.Name}");
 
-                FillInfoAboutSpell(fairyObject, 0, fairy.Spells[0].Name, "Offensive Spells");
-                FillInfoAboutSpell(fairyObject, 1, fairy.Spells[1].Name, "Defensive Spells");
-                FillInfoAboutSpell(fairyObject, 2, fairy.Spells[2].Name, "Offensive Spells");
-                FillInfoAboutSpell(fairyObject, 3, fairy.Spells[3].Name, "Defensive Spells");
+                FillInfoAboutSpell(fairyObject, 0, fairy.Spells[0], "Offensive Spells");
+                FillInfoAboutSpell(fairyObject, 1, fairy.Spells[1], "Defensive Spells");
+                FillInfoAboutSpell(fairyObject, 2, fairy.Spells[2], "Offensive Spells");
+                FillInfoAboutSpell(fairyObject, 3, fairy.Spells[3], "Defensive Spells");
 
                 i++;
             }

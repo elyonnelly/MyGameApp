@@ -6,23 +6,16 @@ namespace Assets.Scripts.GUI
 {
     class PlayerController : MonoBehaviour
     {
-        void Start()
+        void Awake()
         {
             var fairies = new List<Fairy>();
             var tag = string.Empty;
             var tagSpell = string.Empty;
-            if (gameObject.tag == "Player")
-            {
-                 fairies = GameDataManager.Instance.PlayerData.ActiveFairies;
-                 tag = "Player Fairy";
-                 tagSpell = "Player Spell";
-            }
-            if (gameObject.tag == "Enemy")
-            {
-                fairies = GameDataManager.Instance.EnemyData.ActiveFairies;
-                tag = "Enemy Fairy";
-                tagSpell = "Enemy Spell";
-            }
+            
+            fairies = GameDataManager.Instance.PlayerData.ActiveFairies;
+            tag = "Player Fairy";
+            tagSpell = "Player Spell";
+            
 
             for (int i = 0; i < gameObject.transform.childCount; i++)
             {
@@ -36,18 +29,20 @@ namespace Assets.Scripts.GUI
                 {
                     var spell = fairy.transform.GetChild(j);
 
-                    if (DataOfModels.OffensiveSpells.ContainsKey(spells[j].Name))
+                    if (DataOfModels.OffensiveSpells.ContainsKey(spells[j]))
                     {
-                        spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/Offensive Spells/{spells[j].Name}");
-                        spell.name = spells[j].Name;
+                        spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/Offensive Spells/{spells[j]}");
+                        spell.name = spells[j];
                         spell.tag = tagSpell;
                     }
-                    if (DataOfModels.DefensiveSpells.ContainsKey(spells[j].Name))
+                    if (DataOfModels.DefensiveSpells.ContainsKey(spells[j]))
                     {
-                        spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/Defensive Spells/{spells[j].Name}");
-                        spell.name = spells[j].Name;
+                        spell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/Defensive Spells/{spells[j]}");
+                        spell.name = spells[j];
                         spell.tag = tagSpell;
                     }
+
+                    
                 }
 
             }

@@ -34,26 +34,61 @@ namespace Assets.Scripts
 
         void Initialize()
         {
+            /*PlayerData = new Player();
+            PlayerData.ActiveFairies = new System.Collections.Generic.List<Fairy>
+            {
+                (Fairy) DataOfModels.Fairies["Sillia"].Clone()
+            };
+            PlayerData.AllowFairies = new System.Collections.Generic.List<Fairy>
+            {
+                (Fairy) DataOfModels.Fairies["Sillia"].Clone()
+            };
+            PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<OffensiveSpell>();
+            PlayerData.AllowDefensiveSpells = new System.Collections.Generic.List<DefensiveSpell>();
+
+
+            EnemyData = new Player();
+            EnemyData.ActiveFairies = new System.Collections.Generic.List<Fairy>
+            {
+                (Fairy) DataOfModels.Fairies["Sillia"].Clone()
+            };
+            EnemyData.AllowFairies = new System.Collections.Generic.List<Fairy>
+            {
+                (Fairy) DataOfModels.Fairies["Sillia"].Clone()
+            };
+            EnemyData.AllowOffensiveSpells = new System.Collections.Generic.List<OffensiveSpell>();
+            EnemyData.AllowDefensiveSpells = new System.Collections.Generic.List<DefensiveSpell>();*/
+
             try
             {
                 using (var reader = new StreamReader(@"player.json"))
                 {
                     PlayerData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
-                    PlayerData.AllowDefensiveSpells = new System.Collections.Generic.List<DefensiveSpell>();
-                    PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<OffensiveSpell>();
-                    foreach (var spell in DataOfModels.DefensiveSpells.Values)
-                    {
-                        PlayerData.AllowDefensiveSpells.Add(spell);
-                    }
-
+                    /*PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
                     foreach (var spell in DataOfModels.OffensiveSpells.Values)
                     {
-                        PlayerData.AllowOffensiveSpells.Add(spell);
+                        PlayerData.AllowOffensiveSpells.Add(spell.Name);
                     }
+                    PlayerData.AllowDefensiveSpells = new System.Collections.Generic.List<string>();
+                    foreach (var spell in DataOfModels.DefensiveSpells.Values)
+                    {
+                        PlayerData.AllowDefensiveSpells.Add(spell.Name);
+                    }*/
+
                 }
                 using (var reader = new StreamReader(@"enemy.json"))
                 {
                     EnemyData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                    /*EnemyData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
+                    foreach (var spell in DataOfModels.OffensiveSpells.Values)
+                    {
+                        EnemyData.AllowOffensiveSpells.Add(spell.Name);
+                    }
+                    EnemyData.AllowDefensiveSpells = new System.Collections.Generic.List<string>();
+                    foreach (var spell in DataOfModels.DefensiveSpells.Values)
+                    {
+                        EnemyData.AllowDefensiveSpells.Add(spell.Name);
+                    }*/
                 }
 
             }

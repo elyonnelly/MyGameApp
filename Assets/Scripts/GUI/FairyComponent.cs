@@ -12,14 +12,8 @@ namespace Assets.Scripts.GUI
         private Fairy fairy;
         void Start()
         {
-            if (tag == "Enemy Fairy")
-            {
-                fairy = GameDataManager.Instance.EnemyData.ActiveFairies[Number];
-            }
-            else
-            {
-                fairy = GameDataManager.Instance.PlayerData.ActiveFairies[Number];
-            }
+
+            fairy = GameDataManager.Instance.PlayerData.ActiveFairies[Number];
             FairyInfo.text = fairy.GetState();
         }
 

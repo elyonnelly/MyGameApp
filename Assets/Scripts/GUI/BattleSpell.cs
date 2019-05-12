@@ -10,6 +10,7 @@ namespace Assets.Scripts.GUI
         public GameObject Sparkle;
 
         private bool isDrag;
+        private bool isEmpty;
         private Vector3 initialPosition;
         private Vector3 offset;
         private List<GameObject> sparkles;
@@ -18,6 +19,10 @@ namespace Assets.Scripts.GUI
         void Start()
         {
             sparkles = new List<GameObject>();
+            if (name == "Empty Slot")
+            {
+                isEmpty = true;
+            }
 
             EventAggregator.FairyAttack += EventAggregatorFairyAttack;
         }
@@ -35,6 +40,11 @@ namespace Assets.Scripts.GUI
 
         void OnMouseDown()
         {
+            if (isEmpty)
+            {
+                return;
+            }
+
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             if (!isDrag)
             {
@@ -48,6 +58,11 @@ namespace Assets.Scripts.GUI
 
         private void OnMouseDrag()
         {
+
+            if (isEmpty)
+            {
+                return;
+            }
             if (!isDrag)
             {
                 return;
@@ -67,7 +82,8 @@ namespace Assets.Scripts.GUI
         }
         private void OnMouseUp()
         {
-            if (DataOfModels.Spells[name] is DefensiveSpell)
+
+            if (isEmpty)
             {
                 return;
             }

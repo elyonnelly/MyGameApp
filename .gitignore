@@ -17,7 +17,6 @@ ExportedObj/
 .idea/
 *.csproj
 *.unityproj
-*.sln
 *.suo
 *.tmp
 *.user

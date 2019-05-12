@@ -1,4 +1,6 @@
 ﻿using System.Timers;
+using System;
+using System.Collections;
 using Assets.Scripts.GameLogic;
 using Assets.Scripts.GameLogic.DataModels;
 using UnityEngine;
@@ -16,6 +18,7 @@ namespace Assets.Scripts
         private Timer timer;
         private string currentHero;
         private double allCurrentDamage;
+        private static System.Random randomizer = new System.Random();
 
 
         public delegate void CastEffect(Fairy attacker, Fairy victim, Spell spell);
@@ -27,8 +30,9 @@ namespace Assets.Scripts
             player = GameDataManager.Instance.PlayerData;
             enemy = GameDataManager.Instance.EnemyData;
             timer = new Timer(180000); // 3 минуты
-            timer.Elapsed += NewMove;
+            timer.Elapsed += NewMoveFromTimer;
             timer.Enabled = true;
+
 
             currentHero = "player";
 
@@ -37,14 +41,43 @@ namespace Assets.Scripts
             EventAggregator.RemoveSpell += OnRemoveSpell;
             EventAggregator.AddSpell += OnAddSpell;
             EventAggregator.FairyAttack += OnFairyAttack;
+            EventAggregator.EnemyAttack += OnFairyAttack;
+            EventAggregator.StartMove += CausedNewMove;
+            Effects[0] = Effect0;
+            Effects[1] = Effect1;
+            Effects[2] = Effect2;
+            Effects[3] = Effect3;
+            Effects[4] = Effect4;
+            Effects[5] = Effect5;
+            Effects[6] = Effect6;
+            Effects[7] = Effect7;
+            Effects[8] = Effect8;
+            Effects[9] = Effect9;
+            Effects[10] = Effect10;
+            Effects[11] = Effect11;
+            Effects[12] = Effect12;
+            Effects[13] = Effect13;
+            Effects[14] = Effect14;
         }
 
+        void CausedNewMove(string hero)
+        {
+            if (hero == "enemy")
+            {
+                EnemyMove();
+            }
+        }
 
-        void NewMove(object source, ElapsedEventArgs e)
+        void NewMoveFromTimer(object source, ElapsedEventArgs e)
+        {
+            NewMove();
+        }
+
+        void NewMove()
         {
             currentHero = currentHero == "player" ? "enemy" : "player";
             EventAggregator.OnStartMove(currentHero); //можно играть на одном устройстве,
-                                                      //тогда будут поочередно разблокироваться разные части экрана
+            //тогда будут поочередно разблокироваться разные части экрана
             if (currentHero == "enemy")
             {
                 EnemyMove();
@@ -53,40 +86,75 @@ namespace Assets.Scripts
 
         private void EnemyMove()
         {
+            //сначала ищем совпадения по эффективности
+            StartCoroutine(ChoiceVictim(1));
+            StartCoroutine(ChoiceVictim(1));
+            NewMove();
+        }
 
+        private IEnumerator ChoiceVictim(int effectiveness)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    var enemyFairy = enemy.ActiveFairies[i];
+                    var playerFairy = player.ActiveFairies[j];
+
+                    if (DataOfModels.TableOfEffectiveness[(int) enemyFairy.Element, (int) playerFairy.Element] != effectiveness || playerFairy.IsDead)
+                    {
+                        continue;
+                    }
+
+                    if (randomizer.Next(2) == 0 && enemyFairy.Spells[0] != "Empty Slot")
+                    {
+                        EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[0], "player");
+
+                    }
+                    else
+                    {
+                        if (enemyFairy.Spells[2] != "Empty Slot")
+                        {
+                            EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[2], "player");
+                        }
+                    }
+
+                    yield return new WaitForSeconds(1f);
+                }
+            }
         }
 
         void OnFairyAttack(int forwardFairyNumber, int victimFairyNumber, string spellName, string victim)
         {
-
-            if (victim == "Player")
+            Debug.Log(forwardFairyNumber + " " + victimFairyNumber + spellName + victim);
+            if (victim == "player")
             {
-                var victimFairy = player.ActiveFairies[forwardFairyNumber];
-                var forwardFairy = enemy.ActiveFairies[victimFairyNumber];
+                var victimFairy = player.ActiveFairies[victimFairyNumber];
+                var forwardFairy = enemy.ActiveFairies[forwardFairyNumber];
                 var spell = DataOfModels.OffensiveSpells[spellName];
 
-                forwardFairy.AttackFairy(victimFairy, (OffensiveSpell)spell);
+                forwardFairy.AttackFairy(victimFairy, spell);
             }
 
-            if (victim == "Enemy")
+            if (victim == "enemy")
             {
                 var victimFairy = enemy.ActiveFairies[forwardFairyNumber];
                 var forwardFairy = player.ActiveFairies[victimFairyNumber];
                 var spell = DataOfModels.OffensiveSpells[spellName];
 
-                forwardFairy.AttackFairy(victimFairy, (OffensiveSpell)spell);
+                forwardFairy.AttackFairy(victimFairy, spell);
             }
 
         }
 
         void OnRemoveSpell(int fairyPosition, int spellPosition, string name)
         {
-            player.ActiveFairies[fairyPosition].Spells[spellPosition] = new Spell("Empty Slot");
+            player.ActiveFairies[fairyPosition].Spells[spellPosition] = "Empty Slot";
         }
 
         void OnAddSpell(int fairyPosition, int spellPosition, string name)
         {
-            player.ActiveFairies[fairyPosition].Spells[spellPosition] = (Spell)DataOfModels.Spells[name].Clone();
+            player.ActiveFairies[fairyPosition].Spells[spellPosition] = name;
         }
 
         void OnDisableFairy(int position, string name)

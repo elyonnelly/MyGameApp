@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
@@ -27,7 +28,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         public int HitPoints { private set; get; }
 
         //[DataMember]
-        public Spell[] Spells { set; get; }
+        public string[] Spells { set; get; }
         public int Level { set; get; }
 
         private double healthPoint;
@@ -68,80 +69,57 @@ namespace Assets.Scripts.GameLogic.DataModels
             }
             get => experiencePoints;
         }
-        public Fairy(string name, string description, Element element)
+        public Fairy(string name, string description, Element element) : this()
         {
             Name = name;
-            HealthPoint = 30;
-            Spells = new Spell[4];
-            for (var i = 0; i < 4; i++)
-            {
-                Spells[i] = new Spell("Empty Slot");
-            }
-            Magic = 30;
             Description = description;
-            Level = 1;
             Element = element;
-            IsDead = false;
         }
 
-        public Fairy(string name, string description, Element element, Spell[] spells)
-        {
-            Name = name;
-            HealthPoint = 30;
-            Spells = new Spell[4];
-            for (var i = 0; i < 2; i++)
-            {
-                Spells[i] = spells[i];
-            }
-            for (var i = 2; i < 4; i++)
-            {
-                Spells[i] = new Spell("Empty Slot");
-            }
-            Magic = 30;
-            Description = description;
-            Level = 1;
-            Element = element;
-            IsDead = false;
-        }
 
         public Fairy()
         {
             HealthPoint = 30;
-            Spells = new Spell[4];
+            Spells = new string[4];
             for (var i = 0; i < 4; i++)
             {
-                Spells[i] = new Spell("Empty Slot");
+                Spells[i] = "Empty Slot";
             }
             Magic = 30;
             Level = 1;
             IsDead = false;
             ExperiencePoints = 0;
+            RateFactor = 1;
+            DamageCoefficient = 1;
+            AbilityToCriticalHit = true;
+            AbilityToTakeCriticalHit = true;
+            DamageReduction = 0;
         }
 
-        
+
         public bool IsDead { set; get; }
 
         public string GetState()
         {
-            return $"Magic: {Magic} HP: {HealthPoint}";
+            return $"HP: {HealthPoint}";
         }
 
         public virtual void AttackFairy(Fairy victim, OffensiveSpell spell)
         {
             //обработка на стихии
 
-            var effectiveness = DataOfModels.TableOfEffectiveness[(int) Element, (int) victim.Element];
+            var effectiveness = DataOfModels.TableOfEffectiveness[(int)Element, (int)victim.Element];
 
-            var damage = effectiveness == -1 ? spell.Damage * 10 - 0.8 * spell.Damage : 
-                            effectiveness == 1 ? spell.Damage * 10 + 0.8 * spell.Damage : spell.Damage;
+            var damage = effectiveness == -1 ? spell.Damage * 10 - 0.8 * spell.Damage :
+                            effectiveness == 1 ? spell.Damage * 10 + 0.8 * spell.Damage : spell.Damage * 10;
             victim.HealthPoint -= (int)damage;
 
-            //и обработка на эффект заклинания
+            Debug.Log(victim.HealthPoint);
 
-            
+
         }
 
-        
+
         //TODO для других(не просто атакующих) заклинаний
         public virtual void CastSpell(Spell spell)
         {
@@ -194,7 +172,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         {
             var fairy = new Fairy(Name, Description, Element)
             {
-                Spells = new Spell[4],
+                Spells = new string[4],
                 EvolvesTo = this.EvolvesTo,
                 LevelForEvolution = this.LevelForEvolution
             };

@@ -13,10 +13,17 @@ namespace Assets.Scripts.GUI
         public int PageSpell;
         public int PageFairy;
         public string CurrentEssence;
+
+        public void FinishTheMove()
+        {
+            EventAggregator.OnStartMove("enemy"); //очевидно нажать на кнопку в данной ситуации может только игрок
+        }
         public void LoadScene(string sceneName)
         {
             if (SceneManager.GetActiveScene().name == "Choise Fairy Scene")
             {
+                //если есть пустые слоты, то запретить выходить со сцены
+
                 try
                 {
                     using (var writer = new StreamWriter(@"player.json"))
@@ -56,10 +63,6 @@ namespace Assets.Scripts.GUI
             ShowSpells();
         }
 
-        public void StartNewMove()
-        {
-            EventAggregator.OnStartMove("enemy"); //очевидно нажать на кнопку в данной ситуации может только игрок
-        }
 
         public void ScrollRight()
         {
