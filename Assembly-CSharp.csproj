@@ -53,7 +53,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Effects.cs" />
      <Compile Include="Assets\Scripts\EventAggregator.cs" />
      <Compile Include="Assets\Scripts\GameDataManager.cs" />
      <Compile Include="Assets\Scripts\GameLogic\DataModels\DataOfModels.cs" />
@@ -76,6 +75,7 @@
      <Compile Include="Assets\Scripts\GUI\BattleDefensiveSpell.cs" />
      <Compile Include="Assets\Scripts\GUI\BattleEnemySpell.cs" />
      <Compile Include="Assets\Scripts\GUI\BattleSpell.cs" />
+     <Compile Include="Assets\Scripts\GUI\Effects.cs" />
      <Compile Include="Assets\Scripts\GUI\EnemyController.cs" />
      <Compile Include="Assets\Scripts\GUI\EnemyFairyComponent.cs" />
      <Compile Include="Assets\Scripts\GUI\FairyComponent.cs" />
@@ -84,10 +84,10 @@
      <Compile Include="Assets\Scripts\GUI\ListOfSpell.cs" />
      <Compile Include="Assets\Scripts\GUI\PlayerController.cs" />
      <Compile Include="Assets\Scripts\GUI\Sparkle.cs" />
+     <Compile Include="Assets\Scripts\GUI\TextComponent.cs" />
+     <Compile Include="Assets\Scripts\GUI\WinnerFairyComponent.cs" />
+     <Compile Include="Assets\Scripts\GUI\WinnerPlayerComponent.cs" />
      <Compile Include="Assets\Scripts\Singleton.cs" />
-     <Compile Include="Assets\TextComponent.cs" />
-     <Compile Include="Assets\WinnerFairyComponent.cs" />
-     <Compile Include="Assets\WinnerPlayerComponent.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />

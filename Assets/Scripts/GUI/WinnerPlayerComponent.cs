@@ -1,7 +1,6 @@
-﻿using Assets.Scripts;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Assets
+namespace Assets.Scripts.GUI
 {
     public class WinnerPlayerComponent : MonoBehaviour
     {
