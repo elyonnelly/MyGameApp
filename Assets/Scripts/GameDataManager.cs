@@ -14,21 +14,15 @@ namespace Assets.Scripts
         public Player PlayerData;
         public Player EnemyData;
         private Guid guid = Guid.NewGuid();
-        
+
         private void Awake()
         {
-            Debug.Log(guid);
-
-            Debug.Log(Instance?.guid);
             Instance?.Destroy();
             Instance = this;
-            
+
             DontDestroyOnLoad(gameObject);
 
             Initialize();
-            Debug.Log(guid);
-
-            Debug.Log(Instance?.guid);
         }
 
         void Destroy()
@@ -41,14 +35,22 @@ namespace Assets.Scripts
             /*PlayerData = new Player();
             PlayerData.ActiveFairies = new System.Collections.Generic.List<Fairy>
             {
-                (Fairy) DataOfModels.Fairies["Sillia"].Clone()
+                (Fairy) DataOfModels.Fairies["Sillia"].Clone(),
+
+                (Fairy) DataOfModels.Fairies["Corgot"].Clone(),
+                (Fairy) DataOfModels.Fairies["Sirael"].Clone(),
+
+                (Fairy) DataOfModels.Fairies["Tadana"].Clone(),
+
+                (Fairy) DataOfModels.Fairies["Worgot"].Clone()
+
             };
-            PlayerData.AllowFairies = new System.Collections.Generic.List<Fairy>
+
+            PlayerData.AllowFairies = new System.Collections.Generic.List<Fairy>();
+            foreach (var fairy in DataOfModels.Fairies.Values)
             {
-                (Fairy) DataOfModels.Fairies["Sillia"].Clone()
-            };
-            PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<OffensiveSpell>();
-            PlayerData.AllowDefensiveSpells = new System.Collections.Generic.List<DefensiveSpell>();
+                PlayerData.AllowFairies.Add((Fairy)fairy.Clone());
+            }
 
 
             EnemyData = new Player();
@@ -60,15 +62,37 @@ namespace Assets.Scripts
             {
                 (Fairy) DataOfModels.Fairies["Sillia"].Clone()
             };
-            EnemyData.AllowOffensiveSpells = new System.Collections.Generic.List<OffensiveSpell>();
-            EnemyData.AllowDefensiveSpells = new System.Collections.Generic.List<DefensiveSpell>();*/
+
+
+            PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
+            EnemyData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
+            foreach (var spell in DataOfModels.OffensiveSpells.Values)
+            {
+                PlayerData.AllowOffensiveSpells.Add(spell.Name);
+                EnemyData.AllowOffensiveSpells.Add(spell.Name);
+            }
+            PlayerData.AllowDefensiveSpells = new System.Collections.Generic.List<string>();
+            EnemyData.AllowDefensiveSpells = new System.Collections.Generic.List<string>();
+            foreach (var spell in DataOfModels.DefensiveSpells.Values)
+            {
+                PlayerData.AllowDefensiveSpells.Add(spell.Name);
+                EnemyData.AllowDefensiveSpells.Add(spell.Name);
+            }*/
 
             try
             {
                 using (var reader = new StreamReader(@"player.json"))
                 {
                     PlayerData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
-                    /*PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
+                    /*foreach (var fairy in PlayerData.ActiveFairies)
+                    {
+                        fairy.HealthPoint = fairy.HitPoints * 8 + 11;
+                    }
+                    foreach (var fairy in PlayerData.AllowFairies)
+                    {
+                        fairy.HealthPoint = fairy.HitPoints * 8 + 11;
+                    }
+                    PlayerData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
                     foreach (var spell in DataOfModels.OffensiveSpells.Values)
                     {
                         PlayerData.AllowOffensiveSpells.Add(spell.Name);
@@ -83,7 +107,15 @@ namespace Assets.Scripts
                 using (var reader = new StreamReader(@"enemy.json"))
                 {
                     EnemyData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
-                    /*EnemyData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
+                    /*foreach (var fairy in EnemyData.ActiveFairies)
+                    {
+                        fairy.HealthPoint = fairy.HitPoints * 8 + 11;
+                    }
+                    foreach (var fairy in EnemyData.AllowFairies)
+                    {
+                        fairy.HealthPoint = fairy.HitPoints * 8 + 11;
+                    }
+                    EnemyData.AllowOffensiveSpells = new System.Collections.Generic.List<string>();
                     foreach (var spell in DataOfModels.OffensiveSpells.Values)
                     {
                         EnemyData.AllowOffensiveSpells.Add(spell.Name);
@@ -101,6 +133,6 @@ namespace Assets.Scripts
                 Debug.Log(ex.Message);
             }
         }
-        
+
     }
 }

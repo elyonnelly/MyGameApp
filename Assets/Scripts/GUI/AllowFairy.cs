@@ -46,9 +46,9 @@ namespace Assets.Scripts.GUI
 
         private void ViewInfo()
         {
-            var fairy = DataOfModels.Fairies[name];
+            var fairy = (Fairy)DataOfModels.Fairies[name].Clone();
             Photo.sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/Description Icon/{fairy.Name}");
-            Info.text = $"Level:  {fairy.Level} \n Mana: {fairy.Magic}\n Health Points: {fairy.HealthPoint}";
+            Info.text = $"Level:  {fairy.Level} \n Mana: {fairy.Magic}\n Hit Points: {fairy.HitPoints}";
             Description.text = $"{fairy.Name}\n\n{fairy.Description}\n ";
         }
 

@@ -2,7 +2,7 @@
 {
     public class EnemyFairy : Fairy
     {
-        public override void AttackFairy(Fairy victim, OffensiveSpell spell)
+        public override void Attack(Fairy victim, OffensiveSpell spell)
         {
             throw new System.NotImplementedException();
         }

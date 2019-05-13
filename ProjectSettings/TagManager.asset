@@ -20,6 +20,7 @@ TagManager:
   - FairyDescription
   - FairyPhoto
   - Canvas
+  - Effect
   layers:
   - Default
   - TransparentFX

@@ -24,7 +24,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         [JsonProperty("LevelForEvolution")]
         public int LevelForEvolution { private set; get; }
 
-        //[JsonProperty("HitPoints")]
+        [JsonProperty("HitPoints")]
         public int HitPoints { private set; get; }
 
         //[DataMember]
@@ -53,6 +53,34 @@ namespace Assets.Scripts.GameLogic.DataModels
         //[DataMember]
         public int Magic { set; get; }
 
+        private int levelCoefficient;
+
+        public int LevelCoefficient
+        {
+            get
+            {
+                if (Level < 10)
+                {
+                    levelCoefficient = 1;
+                }
+                if (Level >= 10 && Level < 25)
+                {
+                    levelCoefficient = 2;
+                }
+                if (Level >= 25 && Level < 45)
+                {
+                    levelCoefficient = 10;
+                }
+
+                if (Level >= 45)
+                {
+                    levelCoefficient = 15;
+                }
+
+                return levelCoefficient;
+            }
+        }
+
         private int experiencePoints;
         //[DataMember]
         public int ExperiencePoints
@@ -71,6 +99,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         }
         public Fairy(string name, string description, Element element) : this()
         {
+            HealthPoint = 11 + (HitPoints) * 8;
             Name = name;
             Description = description;
             Element = element;
@@ -79,13 +108,13 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public Fairy()
         {
-            HealthPoint = 30;
+            HealthPoint = 11 + (HitPoints) * 8;
             Spells = new string[4];
             for (var i = 0; i < 4; i++)
             {
                 Spells[i] = "Empty Slot";
             }
-            Magic = 30;
+            Magic = 15;
             Level = 1;
             IsDead = false;
             ExperiencePoints = 0;
@@ -101,21 +130,20 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public string GetState()
         {
-            return $"HP: {HealthPoint}";
+            return $"HP: {HealthPoint} Lvl: {Level}";
         }
 
-        public virtual void AttackFairy(Fairy victim, OffensiveSpell spell)
+        public virtual void Attack(Fairy victim, OffensiveSpell spell)
         {
-            //обработка на стихии
 
             var effectiveness = DataOfModels.TableOfEffectiveness[(int)Element, (int)victim.Element];
 
-            var damage = effectiveness == -1 ? spell.Damage * 10 - 0.8 * spell.Damage :
-                            effectiveness == 1 ? spell.Damage * 10 + 0.8 * spell.Damage : spell.Damage * 10;
-            victim.HealthPoint -= (int)damage;
+            //просто атака заклинания
+            var damage = effectiveness == -1 ? spell.Damage * levelCoefficient - 0.8 * spell.Damage * levelCoefficient :
+                effectiveness == 1 ? spell.Damage * levelCoefficient + 0.8 * spell.Damage * levelCoefficient : spell.Damage * levelCoefficient;
 
-            Debug.Log(victim.HealthPoint);
 
+            victim.HealthPoint -= Math.Max((int)damage, 1);
 
         }
 
@@ -131,11 +159,15 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public string Wound { set; get; }
 
-        public double RateFactor;
-        public double DamageCoefficient;
-        public bool AbilityToCriticalHit;
-        public bool AbilityToTakeCriticalHit;
-        public double DamageReduction;
+        public double RateFactor { get; set; }
+        public double DamageCoefficient { get; set; }
+        public bool AbilityToCriticalHit
+        {
+            get;
+            set;
+        }
+        public bool AbilityToTakeCriticalHit { get; set; }
+        public double DamageReduction { get; set; }
 
         public static Fairy Default => new PlayerFairy();
         public override bool Equals(object obj)
@@ -172,9 +204,11 @@ namespace Assets.Scripts.GameLogic.DataModels
         {
             var fairy = new Fairy(Name, Description, Element)
             {
+                HealthPoint = this.HitPoints * 8 + 11,
                 Spells = new string[4],
                 EvolvesTo = this.EvolvesTo,
-                LevelForEvolution = this.LevelForEvolution
+                LevelForEvolution = this.LevelForEvolution,
+                HitPoints = this.HitPoints
             };
             for (var i = 0; i < 4; i++)
             {

@@ -5,6 +5,7 @@ namespace Assets.Scripts.GameLogic
 {
     public class Player
     {
+        public string Name { get; set; }
         public Player(List<Fairy> activeFairies, List<Fairy> allowFairies, int currentStage)
         {
             ActiveFairies = activeFairies;

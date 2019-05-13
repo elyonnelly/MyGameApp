@@ -50,7 +50,7 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public static Dictionary<string, Fairy> Fairies = new Dictionary<string, Fairy>();
 
-        public static int[,] TableOfEffectiveness = new int[,]
+        public static int[,] TableOfEffectiveness = 
         {
             {0,0,0,0,0,1,0,-1,-1,-1,1,-1},
             {0,0,1,0,-1,1,-1,-1,-1,-1,1,1},

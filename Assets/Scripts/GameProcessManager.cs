@@ -1,38 +1,37 @@
-﻿using System.Timers;
-using System;
-using System.Collections;
+﻿using System.Collections;
+using System.Timers;
 using Assets.Scripts.GameLogic;
 using Assets.Scripts.GameLogic.DataModels;
+using Assets.Scripts.GUI;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = System.Random;
 
 namespace Assets.Scripts
 {
-    /// <summary>
-    /// Компонент, отвечающий за игровую логику по сути своей
-    /// </summary>
     public class GameProcessManager : MonoBehaviour
     {
+        public static Spell[,] PlayerSpells = new Spell[5, 4];
+        public static Spell[,] EnemySpells = new Spell[5, 4];
+
+        private static readonly Random randomizer = new Random();
 
         private Player player;
         private Player enemy;
         private Timer timer;
         private string currentHero;
         private double allCurrentDamage;
-        private static System.Random randomizer = new System.Random();
-
-
-        public delegate void CastEffect(Fairy attacker, Fairy victim, Spell spell);
-
-        public static CastEffect[] Effects = new CastEffect[15];
-
-        void Start()
+        private void Awake()
         {
             player = GameDataManager.Instance.PlayerData;
+            player.Name = "Player";
             enemy = GameDataManager.Instance.EnemyData;
+            enemy.Name = "Enemy";
             timer = new Timer(180000); // 3 минуты
             timer.Elapsed += NewMoveFromTimer;
             timer.Enabled = true;
-
+            FillSpellInfo(player, PlayerSpells);
+            FillSpellInfo(enemy, EnemySpells);
 
             currentHero = "player";
 
@@ -40,297 +39,270 @@ namespace Assets.Scripts
             EventAggregator.ActivateFairy += OnActivateFairy;
             EventAggregator.RemoveSpell += OnRemoveSpell;
             EventAggregator.AddSpell += OnAddSpell;
-            EventAggregator.FairyAttack += OnFairyAttack;
-            EventAggregator.EnemyAttack += OnFairyAttack;
-            EventAggregator.StartMove += CausedNewMove;
-            Effects[0] = Effect0;
-            Effects[1] = Effect1;
-            Effects[2] = Effect2;
-            Effects[3] = Effect3;
-            Effects[4] = Effect4;
-            Effects[5] = Effect5;
-            Effects[6] = Effect6;
-            Effects[7] = Effect7;
-            Effects[8] = Effect8;
-            Effects[9] = Effect9;
-            Effects[10] = Effect10;
-            Effects[11] = Effect11;
-            Effects[12] = Effect12;
-            Effects[13] = Effect13;
-            Effects[14] = Effect14;
+            EventAggregator.FairyAttack += OnFairyAttackEvent;
+            EventAggregator.EnemyAttack += OnFairyAttackEvent;
         }
 
-        void CausedNewMove(string hero)
+
+        private void FillSpellInfo(Player hero, Spell[,] spells)
         {
-            if (hero == "enemy")
+            for (var i = 0; i < 5; i++)
             {
+                for (var j = 0; j < 4; j++)
+                {
+                    spells[i, j] = new Spell();
+                    if (j % 2 == 0)
+                    {
+                        if (hero.ActiveFairies != null && DataOfModels.OffensiveSpells.ContainsKey(hero.ActiveFairies[i].Spells[j]))
+                        {
+                            spells[i, j] = (Spell)DataOfModels.OffensiveSpells[hero.ActiveFairies[i].Spells[j]].Clone();
+                        }
+                    }
+                    else
+                    {
+                        if (hero.ActiveFairies != null && DataOfModels.DefensiveSpells.ContainsKey(hero.ActiveFairies[i].Spells[j]))
+                        {
+                            spells[i, j] = (Spell)DataOfModels.DefensiveSpells[hero.ActiveFairies[i].Spells[j]].Clone();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Update()
+        {
+            VictoryCheck(player);
+            VictoryCheck(enemy);
+        }
+        void VictoryCheck(Player hero)
+        {
+            var count = 0;
+            foreach (var fairy in hero.ActiveFairies)
+            {
+                if (fairy.HealthPoint == 0)
+                {
+                    count++;
+                }
+            }
+            if (count == 5)
+            {
+                var winner = hero.Name == "Player" ? "Enemy" : "Player";
+                EventAggregator.OnVictoryInBattle(winner);
+            }
+        }
+
+        private void NewMoveFromTimer(object source, ElapsedEventArgs e)
+        {
+            ShowEffect("Time is over!");
+            NewMove("Enemy");
+        }
+
+        private void NewMove(string hero)
+        {
+            if (hero == "Player")
+            {
+                UnlockPlayerSpells();
+            }
+
+            if (hero == "Enemy")
+            {
+                BlockPlayerSpells();
                 EnemyMove();
             }
         }
 
-        void NewMoveFromTimer(object source, ElapsedEventArgs e)
+        private void BlockPlayerSpells()
         {
-            NewMove();
+            foreach (var fairy in GameObject.FindGameObjectsWithTag("Player Fairy"))
+            {
+                //foreach(var spell in fairy.GetComponentsInChildren<BattleSpell>())
+                for (var i = 0; i < fairy.transform.childCount; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        fairy.transform.GetChild(i).gameObject.GetComponent<BattleSpell>().Inactive = true;
+                    }
+                }
+            }
         }
 
-        void NewMove()
+        private void UnlockPlayerSpells()
         {
-            currentHero = currentHero == "player" ? "enemy" : "player";
-            EventAggregator.OnStartMove(currentHero); //можно играть на одном устройстве,
-            //тогда будут поочередно разблокироваться разные части экрана
-            if (currentHero == "enemy")
+            foreach (var fairy in GameObject.FindGameObjectsWithTag("Player Fairy"))
             {
-                EnemyMove();
+                for (var i = 0; i < fairy.transform.childCount; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        fairy.transform.GetChild(i).gameObject.GetComponent<BattleSpell>().Inactive = false;
+                    }
+                }
             }
         }
 
         private void EnemyMove()
         {
-            //сначала ищем совпадения по эффективности
-            StartCoroutine(ChoiceVictim(1));
-            StartCoroutine(ChoiceVictim(1));
-            NewMove();
+            ChoiceVictim();
+            NewMove("Player");
         }
 
-        private IEnumerator ChoiceVictim(int effectiveness)
+        private void ChoiceVictim()
         {
-            for (int i = 0; i < 5; i++)
+            var enemyFairy = randomizer.Next(5);
+            var playerFairy = randomizer.Next(5);
+
+            EventAggregator.OnEnemyAttack(enemyFairy, playerFairy, enemy.ActiveFairies[enemyFairy].Spells[0], "Player");
+        }
+
+        private void ChoiceVictim(int effectiveness)
+        {
+            for (var i = 0; i < 5; i++)
             {
-                for (int j = 0; j < 5; j++)
+                for (var j = 0; j < 5; j++)
                 {
                     var enemyFairy = enemy.ActiveFairies[i];
                     var playerFairy = player.ActiveFairies[j];
 
-                    if (DataOfModels.TableOfEffectiveness[(int) enemyFairy.Element, (int) playerFairy.Element] != effectiveness || playerFairy.IsDead)
+                    if (DataOfModels.TableOfEffectiveness[(int)enemyFairy.Element, (int)playerFairy.Element] != effectiveness || playerFairy.IsDead)
                     {
                         continue;
                     }
 
                     if (randomizer.Next(2) == 0 && enemyFairy.Spells[0] != "Empty Slot")
                     {
-                        EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[0], "player");
-
+                        EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[0], "Player");
+                        return;
                     }
-                    else
+
+                    if (enemyFairy.Spells[2] != "Empty Slot")
                     {
-                        if (enemyFairy.Spells[2] != "Empty Slot")
-                        {
-                            EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[2], "player");
-                        }
+                        EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[2], "Player");
+                        return;
                     }
-
-                    yield return new WaitForSeconds(1f);
                 }
             }
         }
 
-        void OnFairyAttack(int forwardFairyNumber, int victimFairyNumber, string spellName, string victim)
+        private void ReplayAttack(int forwardFairyNumber, int victimFairyNumber, string spellName, Player forward, Player victim)
         {
-            Debug.Log(forwardFairyNumber + " " + victimFairyNumber + spellName + victim);
-            if (victim == "player")
-            {
-                var victimFairy = player.ActiveFairies[victimFairyNumber];
-                var forwardFairy = enemy.ActiveFairies[forwardFairyNumber];
-                var spell = DataOfModels.OffensiveSpells[spellName];
+            var forwardFairy = forward.ActiveFairies[forwardFairyNumber];
+            var victimFairy = victim.ActiveFairies[victimFairyNumber];
+            var spell = DataOfModels.OffensiveSpells[spellName];
 
-                forwardFairy.AttackFairy(victimFairy, spell);
-            }
+            var effectiveness = DataOfModels.TableOfEffectiveness[(int)forwardFairy.Element, (int)victimFairy.Element];
+            ShowEffect(effectiveness);
 
-            if (victim == "enemy")
-            {
-                var victimFairy = enemy.ActiveFairies[forwardFairyNumber];
-                var forwardFairy = player.ActiveFairies[victimFairyNumber];
-                var spell = DataOfModels.OffensiveSpells[spellName];
+            forwardFairy.Attack(victimFairy, spell);
 
-                forwardFairy.AttackFairy(victimFairy, spell);
-            }
-
+            ReduceMana(spellName, forwardFairyNumber, forward.Name);
+            StartCoroutine(GotoNewMove(victim.Name));
         }
 
-        void OnRemoveSpell(int fairyPosition, int spellPosition, string name)
+        private void OnFairyAttackEvent(int forwardFairyNumber, int victimFairyNumber, string spellName, string victim)
+        {
+            Debug.Log(forwardFairyNumber + " " + victimFairyNumber + " " + spellName + " " + victim);
+            if (victim == "Player")
+            {
+                ReplayAttack(forwardFairyNumber, victimFairyNumber, spellName, enemy, player);
+            }
+
+            if (victim == "Enemy")
+            {
+                ReplayAttack(forwardFairyNumber, victimFairyNumber, spellName, player, enemy);
+            }
+        }
+
+        private void ShowEffect(int effectiveness)
+        {
+            if (effectiveness == 1)
+            {
+                ShowEffect("very effective");
+            }
+
+            if (effectiveness == -1)
+            {
+                ShowEffect("inefficient");
+            }
+        }
+
+        private IEnumerator GotoNewMove(string hero)
+        {
+            yield return new WaitForSeconds(1);
+            NewMove(hero);
+        }
+
+        private void ShowEffect(string effect)
+        {
+            var text = GameObject.FindGameObjectWithTag("Effect").GetComponent<Text>();
+            switch (effect)
+            {
+                case "very effective":
+                    text.color = Color.green;
+                    break;
+                case "inefficient":
+                    text.color = Color.red;
+                    break;
+                default:
+                    text.color = Color.white;
+                    break;
+            }
+
+            text.text = effect;
+
+            StartCoroutine(FadeText(text));
+        }
+
+        private IEnumerator FadeText(Text text)
+        {
+            var color = new Color(text.color.r, text.color.g, text.color.b, 10);
+            text.color = color;
+            for (var f = 1f; f >= 0; f -= 0.02f)
+            {
+                text.color = color;
+                color.a = f;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
+        private void ReduceMana(string spell, int fairy, string forward)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                if (forward == "Player")
+                {
+                    if (PlayerSpells[fairy, i].Name == spell)
+                    {
+                        PlayerSpells[fairy, i].Mana--;
+                    }
+                }
+                else
+                {
+                    if (EnemySpells[fairy, i].Name == spell)
+                    {
+                        EnemySpells[fairy, i].Mana--;
+                    }
+                }
+            }
+        }
+
+        private void OnRemoveSpell(int fairyPosition, int spellPosition, string name)
         {
             player.ActiveFairies[fairyPosition].Spells[spellPosition] = "Empty Slot";
         }
 
-        void OnAddSpell(int fairyPosition, int spellPosition, string name)
+        private void OnAddSpell(int fairyPosition, int spellPosition, string name)
         {
             player.ActiveFairies[fairyPosition].Spells[spellPosition] = name;
         }
 
-        void OnDisableFairy(int position, string name)
+        private void OnDisableFairy(int position, string name)
         {
             player.ActiveFairies[position] = new Fairy();
         }
 
-        void OnActivateFairy(int position, string name)
+        private void OnActivateFairy(int position, string name)
         {
-            player.ActiveFairies[position] = (Fairy)(DataOfModels.Fairies[name]).Clone();
-        }
-
-        public void Effect0(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.HealthPoint -= ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-        }
-        /// <summary>
-        /// On critical hit: N damage points 
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect1(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.HealthPoint -= (spell.Characteristic + ((OffensiveSpell)spell).Damage) * attacker.DamageCoefficient * victim.DamageReduction;
-        }
-        /// <summary>
-        /// On critical hit: N% more damage 
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect2(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.HealthPoint -= spell.Characteristic * ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-        }
-
-        /// <summary>
-        /// On critical hit: Opponent's spells recharge N% slower
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect3(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.HealthPoint -= ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-            victim.RateFactor = spell.Characteristic;
-        }
-
-        /// <summary>
-        /// Glaciation
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect4(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.Wound = "Glaciation"; //минус все показатели вероятно.
-            //вызов ивента на нарисовать спрайт?
-            victim.HealthPoint -= ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-            victim.RateFactor = 0.8;
-            victim.DamageCoefficient = 0.8;
-        }
-
-        /// <summary>
-        /// Blindness
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect5(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.Wound = "Blindness"; //минус все показатели вероятно.
-            //вызов ивента на нарисовать спрайт?
-            victim.HealthPoint -= ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-            victim.RateFactor = 0;
-            victim.DamageCoefficient = 0;
-        }
-
-        /// <summary>
-        /// Burning
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect6(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.Wound = "Burning"; //минус все показатели вероятно.
-            //вызов ивента на нарисовать спрайт?
-            victim.HealthPoint -= ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-            victim.RateFactor = 0;
-            victim.DamageCoefficient = 0;
-        }
-        /// <summary>
-        /// Temporary incapacity
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect7(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.HealthPoint -= ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-            victim.RateFactor = 0;
-            victim.DamageCoefficient = 0;
-        }
-
-        /// <summary>
-        /// Loss of opportunity to critical hit
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect8(Fairy attacker, Fairy victim, Spell spell)
-        {
-            victim.HealthPoint -= ((OffensiveSpell)spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-            victim.AbilityToCriticalHit = false;
-        }
-
-        /// <summary>
-        /// Restores hit points
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect9(Fairy attacker, Fairy victim, Spell spell)
-        {
-            attacker.HealthPoint += spell.Characteristic;
-        }
-
-        /// <summary>
-        /// Restores life points in the amount of damage
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect10(Fairy attacker, Fairy victim, Spell spell)
-        {
-            attacker.HealthPoint += allCurrentDamage;
-        }
-
-        /// <summary>
-        /// critical strikes of the enemy are ineffectual
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect11(Fairy attacker, Fairy victim, Spell spell)
-        {
-            attacker.AbilityToTakeCriticalHit = false;
-        }
-
-        /// <summary>
-        /// increase spell casting speed
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect12(Fairy attacker, Fairy victim, Spell spell)
-        {
-            attacker.RateFactor = spell.Characteristic;
-        }
-
-        /// <summary>
-        /// N% additional damage on each hit
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="victim"></param>
-        /// <param name="spell"></param>
-        public void Effect13(Fairy attacker, Fairy victim, Spell spell)
-        {
-            attacker.DamageCoefficient = spell.Characteristic;
-        }
-
-        public void Effect14(Fairy attacker, Fairy victim, Spell spell)
-        {
-            attacker.DamageReduction = spell.Characteristic;
+            player.ActiveFairies[position] = (Fairy)DataOfModels.Fairies[name].Clone();
         }
     }
 }

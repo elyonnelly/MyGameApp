@@ -10,7 +10,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         public string Name { private set; get; }
 
         [JsonProperty("Mana")]
-        public int Mana { private set; get; }
+        public int Mana { set; get; }
 
         [JsonProperty("MajorElement")]
         public Element MajorElement { private set; get; }

@@ -20,10 +20,6 @@ namespace Assets.Scripts.GUI
         public Text SpellInfo;
         public SpriteRenderer FairyPhoto;
 
-        public void FinishTheMove()
-        {
-            EventAggregator.OnStartMove("enemy"); //очевидно нажать на кнопку в данной ситуации может только игрок
-        }
         public void LoadScene(string sceneName)
         {
             if (SceneManager.GetActiveScene().name == "Choise Fairy Scene")

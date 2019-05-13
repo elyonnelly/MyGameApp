@@ -10,6 +10,8 @@ namespace Assets.Scripts.GUI
         // Start is called before the first frame update
         public GameObject Sparkle;
         public GameObject Mana;
+        public int Number;
+        public bool Inactive;
 
         private bool isDrag;
         private bool isEmpty;
@@ -17,6 +19,7 @@ namespace Assets.Scripts.GUI
         private Vector3 offset;
         private List<GameObject> sparkles;
         private int deltaTime = 0;
+        private Spell spell;
 
 
         void Start()
@@ -27,10 +30,11 @@ namespace Assets.Scripts.GUI
                 isEmpty = true;
             }
 
-            if (DataOfModels.OffensiveSpells.ContainsKey(name))
-            {
-                Mana.GetComponent<Text>().text = DataOfModels.OffensiveSpells[name].Mana.ToString();
-            }
+
+            var fairyNumber = GetComponentInParent<FairyComponent>().Number;
+            spell = GameProcessManager.PlayerSpells[fairyNumber, Number];
+
+            Mana.GetComponent<Text>().text = spell.Mana.ToString();
 
             EventAggregator.FairyAttack += EventAggregatorFairyAttack;
         }
@@ -48,7 +52,7 @@ namespace Assets.Scripts.GUI
 
         void OnMouseDown()
         {
-            if (isEmpty)
+            if (isEmpty || Inactive)
             {
                 return;
             }
@@ -67,11 +71,7 @@ namespace Assets.Scripts.GUI
         private void OnMouseDrag()
         {
 
-            if (isEmpty)
-            {
-                return;
-            }
-            if (!isDrag)
+            if (isEmpty || Inactive || !isDrag)
             {
                 return;
             }
@@ -91,7 +91,7 @@ namespace Assets.Scripts.GUI
         private void OnMouseUp()
         {
 
-            if (isEmpty)
+            if (isEmpty || Inactive)
             {
                 return;
             }
@@ -106,6 +106,7 @@ namespace Assets.Scripts.GUI
         void Update()
         {
             deltaTime++;
+            Mana.GetComponent<Text>().text = spell.Mana.ToString();
         }
     }
 }

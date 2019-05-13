@@ -40,6 +40,7 @@ namespace Assets.Scripts.GUI
             var fairy = transform.GetComponentInParent<ActiveFairy>();
             if (!IsEmpty)
             {
+                Debug.Log("a");
                 EventAggregator.OnRemoveSpell(fairy.Number, Number, gameObject.name);
             }
 
@@ -60,7 +61,7 @@ namespace Assets.Scripts.GUI
 
         private void MakeEmpty()
         {
-            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Spells Icon/EmptySpell");
+            GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Spells Icon/Offensive Spells/Empty Slot");
             name = $"ActiveSpell{Number}";
             transform.position = initialPosition;
             IsEmpty = true;

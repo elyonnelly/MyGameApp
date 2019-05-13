@@ -4,7 +4,7 @@ namespace Assets.Scripts.GameLogic.DataModels
 {
     public class PlayerFairy : Fairy
     {
-        public override void AttackFairy(Fairy victim, OffensiveSpell spell)
+        public override void Attack(Fairy victim, OffensiveSpell spell)
         {
             //TODO добавить обработку коэфициента в зависимости от стихии феи
             Magic -= spell.Mana;

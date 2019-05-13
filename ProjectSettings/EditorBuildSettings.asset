@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Choise Fairy Scene.unity
     guid: fcbec594d8e28bc49ab87782b8ac1d52
+  - enabled: 1
+    path: Assets/Scenes/PreBattle.unity
+    guid: 1397ded7b1e02c6449f37c63cd51cf99
   m_configObjects: {}

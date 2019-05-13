@@ -8,13 +8,9 @@ namespace Assets.Scripts.GUI
     {
         void Awake()
         {
-            var fairies = new List<Fairy>();
-            var tag = string.Empty;
-            var tagSpell = string.Empty;
-
-            fairies = GameDataManager.Instance.EnemyData.ActiveFairies;
-            tag = "Enemy Fairy";
-            tagSpell = "Enemy Spell";
+            var fairies = GameDataManager.Instance.EnemyData.ActiveFairies;
+            var tag = "Enemy Fairy";
+            var tagSpell = "Enemy Spell";
 
 
             for (int i = 0; i < gameObject.transform.childCount; i++)

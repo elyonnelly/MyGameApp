@@ -1,4 +1,7 @@
-﻿namespace Assets.Scripts
+﻿using UnityEngine.UI;
+using UnityEngine;
+
+namespace Assets.Scripts
 {
     public class EventAggregator
     {
@@ -23,9 +26,10 @@
         public static event Attack FairyAttack;
         public static event Attack EnemyAttack;
 
-        public delegate void Move(string hero);
+        public delegate void Victory(string winner);
 
-        public static event Move StartMove;
+        public static event Victory VictoryInBattle;
+
         public static void OnDisableFairy(int position, string name)
         {
             DisableFairy?.Invoke(position, name);
@@ -56,14 +60,15 @@
             PlayerWon?.Invoke();
         }
 
-        public static void OnStartMove(string hero)
-        {
-            StartMove?.Invoke(hero);
-        }
 
         public static void OnEnemyAttack(int forwardfairy, int victimfairy, string spell, string victim)
         {
             EnemyAttack?.Invoke(forwardfairy, victimfairy, spell, victim);
+        }
+
+        public static void OnVictoryInBattle(string winner)
+        {
+            VictoryInBattle?.Invoke(winner);
         }
     }
 }
