@@ -39,6 +39,11 @@ namespace Assets.Scripts.GUI
             EventAggregator.FairyAttack += EventAggregatorFairyAttack;
         }
 
+        void OnDisable()
+        {
+            EventAggregator.FairyAttack -= EventAggregatorFairyAttack;
+        }
+
         private void EventAggregatorFairyAttack(int forwardFairy, int victimFairy, string spell, string victim)
         {
 

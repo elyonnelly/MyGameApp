@@ -61,11 +61,11 @@ namespace Assets.Scripts.GameLogic.DataModels
             {
                 if (Level < 10)
                 {
-                    levelCoefficient = 1;
+                    levelCoefficient = 3;
                 }
                 if (Level >= 10 && Level < 25)
                 {
-                    levelCoefficient = 2;
+                    levelCoefficient = 5;
                 }
                 if (Level >= 25 && Level < 45)
                 {
@@ -90,7 +90,7 @@ namespace Assets.Scripts.GameLogic.DataModels
             {
                 if (value - experiencePoints > Level * 0.25)
                 {
-                    Level += 1;
+                    Level += (value - experiencePoints)/5;
                 }
 
                 experiencePoints = value;
@@ -139,10 +139,10 @@ namespace Assets.Scripts.GameLogic.DataModels
             var effectiveness = DataOfModels.TableOfEffectiveness[(int)Element, (int)victim.Element];
 
             //просто атака заклинания
-            var damage = effectiveness == -1 ? spell.Damage * levelCoefficient - 0.8 * spell.Damage * levelCoefficient :
-                effectiveness == 1 ? spell.Damage * levelCoefficient + 0.8 * spell.Damage * levelCoefficient : spell.Damage * levelCoefficient;
+            var damage = effectiveness == -1 ? spell.Damage * LevelCoefficient - 0.8 * spell.Damage * LevelCoefficient :
+                effectiveness == 1 ? spell.Damage * LevelCoefficient + 0.8 * spell.Damage * LevelCoefficient : spell.Damage * LevelCoefficient;
 
-
+            Debug.Log(damage);
             victim.HealthPoint -= Math.Max((int)damage, 1);
 
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Assets.Scripts.GameLogic.DataModels;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
@@ -19,7 +20,15 @@ namespace Assets.Scripts.GUI
             fairy = GameDataManager.Instance.EnemyData.ActiveFairies[Number];
             FairyInfo.text = fairy.GetState();
 
-            EventAggregator.EnemyAttack += Attack;
+            if (SceneManager.GetActiveScene().name == "Battlefield Scene")
+            {
+                EventAggregator.EnemyAttack += Attack;
+            }
+        }
+
+        void OnDisable()
+        {
+            EventAggregator.EnemyAttack -= Attack;
         }
 
         // Update is called once per frame

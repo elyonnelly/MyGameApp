@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PreBattle.unity
     guid: 1397ded7b1e02c6449f37c63cd51cf99
+  - enabled: 1
+    path: Assets/Winner Scene.unity
+    guid: a15fe32af1a9cbc4493695865a3b4290
+  - enabled: 1
+    path: Assets/Losing Scene.unity
+    guid: cbf4751b9d655504d9bd7822aa45d92e
   m_configObjects: {}

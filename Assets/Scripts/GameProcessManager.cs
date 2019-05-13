@@ -4,6 +4,7 @@ using Assets.Scripts.GameLogic;
 using Assets.Scripts.GameLogic.DataModels;
 using Assets.Scripts.GUI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = System.Random;
 
@@ -43,6 +44,16 @@ namespace Assets.Scripts
             EventAggregator.EnemyAttack += OnFairyAttackEvent;
         }
 
+        void OnDisable()
+        {
+            EventAggregator.DisableFairy -= OnDisableFairy;
+            EventAggregator.ActivateFairy -= OnActivateFairy;
+            EventAggregator.RemoveSpell -= OnRemoveSpell;
+            EventAggregator.AddSpell -= OnAddSpell;
+            EventAggregator.FairyAttack -= OnFairyAttackEvent;
+            EventAggregator.EnemyAttack -= OnFairyAttackEvent;
+        }
+
 
         private void FillSpellInfo(Player hero, Spell[,] spells)
         {
@@ -79,7 +90,7 @@ namespace Assets.Scripts
             var count = 0;
             foreach (var fairy in hero.ActiveFairies)
             {
-                if (fairy.HealthPoint == 0)
+                if (fairy.IsDead)
                 {
                     count++;
                 }
@@ -87,7 +98,48 @@ namespace Assets.Scripts
             if (count == 5)
             {
                 var winner = hero.Name == "Player" ? "Enemy" : "Player";
+                if (winner == "Player")
+                {
+                    RecoverFairy();
+                    GiveAwards();
+                    SceneManager.LoadScene("Winner Scene");
+                }
+                if (winner == "Enemy")
+                {
+                    RecoverFairy();
+                    SceneManager.LoadScene("Losing Scene");
+                }
+
                 EventAggregator.OnVictoryInBattle(winner);
+            }
+        }
+
+
+        void RecoverFairy()
+        {
+            foreach (var fairy in player.ActiveFairies)
+            {
+                fairy.HealthPoint = fairy.HitPoints * 8 + 11;
+            }
+        }
+        void GiveAwards()
+        {
+            foreach (var fairy in player.ActiveFairies)
+            {
+                foreach (var enemyFairy in enemy.ActiveFairies)
+                {
+                    if (enemyFairy.Level >= fairy.Level)
+                    {
+                        fairy.ExperiencePoints += 5;
+                    }
+                    else
+                    {
+                        fairy.ExperiencePoints += 3;
+                    }
+                }
+
+                Debug.Log(fairy.ExperiencePoints);
+
             }
         }
 
@@ -150,6 +202,10 @@ namespace Assets.Scripts
         {
             var enemyFairy = randomizer.Next(5);
             var playerFairy = randomizer.Next(5);
+            while (player.ActiveFairies[playerFairy].IsDead)
+            {
+                playerFairy = randomizer.Next(5);
+            }
 
             EventAggregator.OnEnemyAttack(enemyFairy, playerFairy, enemy.ActiveFairies[enemyFairy].Spells[0], "Player");
         }
@@ -187,6 +243,11 @@ namespace Assets.Scripts
         {
             var forwardFairy = forward.ActiveFairies[forwardFairyNumber];
             var victimFairy = victim.ActiveFairies[victimFairyNumber];
+
+            /*if (victimFairy.IsDead)
+            {
+                return;
+            }*/
             var spell = DataOfModels.OffensiveSpells[spellName];
 
             var effectiveness = DataOfModels.TableOfEffectiveness[(int)forwardFairy.Element, (int)victimFairy.Element];
@@ -227,7 +288,7 @@ namespace Assets.Scripts
 
         private IEnumerator GotoNewMove(string hero)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
             NewMove(hero);
         }
 

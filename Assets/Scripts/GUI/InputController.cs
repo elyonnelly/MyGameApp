@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -19,12 +20,36 @@ namespace Assets.Scripts.GUI
         public Text FairyDescription;
         public Text SpellInfo;
         public SpriteRenderer FairyPhoto;
+        public Text Message;
 
+
+        public void ExitApp()
+        {
+            Application.Quit();
+            try
+            {
+                using (var writer = new StreamWriter(@"player.json"))
+                {
+                    writer.Write(JsonConvert.SerializeObject(GameDataManager.Instance.PlayerData));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+            }
+        }
         public void LoadScene(string sceneName)
         {
-            if (SceneManager.GetActiveScene().name == "Choise Fairy Scene")
+            if (SceneManager.GetActiveScene().name == "Choise Fairy Scene" || SceneManager.GetActiveScene().name == "Winner Scene")
             {
-                //если есть пустые слоты, то запретить выходить со сцены
+                foreach (var fairy in GameDataManager.Instance.PlayerData.ActiveFairies)
+                {
+                    if (fairy.Name == null)
+                    {
+                        ShowMessage();
+                        return;
+                    }
+                }
 
                 try
                 {
@@ -39,6 +64,24 @@ namespace Assets.Scripts.GUI
                 }
             }
             SceneManager.LoadScene(sceneName);
+        }
+
+        private void ShowMessage()
+        {
+            Message.text = "Please fill all slots";
+            StartCoroutine(FadeText(Message));
+        }
+
+        private IEnumerator FadeText(Text text)
+        {
+            var color = new Color(text.color.r, text.color.g, text.color.b, 10);
+            text.color = color;
+            for (var f = 1f; f >= 0; f -= 0.02f)
+            {
+                text.color = color;
+                color.a = f;
+                yield return new WaitForEndOfFrame();
+            }
         }
         //TODO сюда мы пишем про обработку, ну например, кнопок на сцене
 
