@@ -126,7 +126,7 @@ namespace Assets.Scripts.GUI
                 {
                     return;
                 }
-                if (Math.Ceiling(DataOfModels.Fairies[fairy.name].Level / 3.0) < defensiveSpell.Level)
+                if (Math.Ceiling(DataOfModels.Fairies[fairy.name].Level / 6.0) < defensiveSpell.Level)
                 {
                     return;
                 }

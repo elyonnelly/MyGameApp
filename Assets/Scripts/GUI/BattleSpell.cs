@@ -20,6 +20,7 @@ namespace Assets.Scripts.GUI
         private List<GameObject> sparkles;
         private int deltaTime = 0;
         private Spell spell;
+        private int fairyNumber;
 
 
         void Start()
@@ -31,7 +32,7 @@ namespace Assets.Scripts.GUI
             }
 
 
-            var fairyNumber = GetComponentInParent<FairyComponent>().Number;
+            fairyNumber = GetComponentInParent<FairyComponent>().Number;
             spell = GameProcessManager.PlayerSpells[fairyNumber, Number];
 
             Mana.GetComponent<Text>().text = spell.Mana.ToString();
@@ -111,6 +112,10 @@ namespace Assets.Scripts.GUI
         void Update()
         {
             deltaTime++;
+            if (GameDataManager.Instance.PlayerData.ActiveFairies[fairyNumber].IsDead)
+            {
+                Inactive = true;
+            }
             Mana.GetComponent<Text>().text = spell.Mana.ToString();
         }
     }

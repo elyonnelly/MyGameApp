@@ -119,7 +119,7 @@ namespace Assets.Scripts
         {
             foreach (var fairy in player.ActiveFairies)
             {
-                fairy.HealthPoint = fairy.HitPoints * 8 + 11;
+                fairy.HealthPoint = 11 + (fairy.HitPoints) * 8 + fairy.Level * (fairy.HitPoints * 2); 
             }
         }
         void GiveAwards()
@@ -200,14 +200,46 @@ namespace Assets.Scripts
 
         private void ChoiceVictim()
         {
-            var enemyFairy = randomizer.Next(5);
-            var playerFairy = randomizer.Next(5);
-            while (player.ActiveFairies[playerFairy].IsDead)
+            var enemyFairyNumber = randomizer.Next(5);
+            while (enemy.ActiveFairies[enemyFairyNumber].IsDead)
             {
-                playerFairy = randomizer.Next(5);
+                enemyFairyNumber = randomizer.Next(5);
             }
 
-            EventAggregator.OnEnemyAttack(enemyFairy, playerFairy, enemy.ActiveFairies[enemyFairy].Spells[0], "Player");
+            var playerFairyNumber = randomizer.Next(5);
+            while (player.ActiveFairies[playerFairyNumber].IsDead)
+            {
+                playerFairyNumber = randomizer.Next(5);
+            }
+
+            var enemyFairy = enemy.ActiveFairies[enemyFairyNumber];
+
+            var i = 0;
+            foreach (var playerFairy in player.ActiveFairies)
+            {
+                Debug.Log((int)enemyFairy.Element + " " + (int)playerFairy.Element);
+                if (DataOfModels.TableOfEffectiveness[(int)enemyFairy.Element, (int)playerFairy.Element] == 1)
+                {
+                    playerFairyNumber = i;
+                    EventAggregator.OnEnemyAttack(enemyFairyNumber, playerFairyNumber, enemy.ActiveFairies[enemyFairyNumber].Spells[0], "Player");
+                    return;
+                }
+                i++;
+            }
+
+            i = 0;
+            foreach (var playerFairy in player.ActiveFairies)
+            {
+                if (DataOfModels.TableOfEffectiveness[(int)enemyFairy.Element, (int)playerFairy.Element] == 0)
+                {
+                    playerFairyNumber = i;
+                    EventAggregator.OnEnemyAttack(enemyFairyNumber, playerFairyNumber, enemy.ActiveFairies[enemyFairyNumber].Spells[0], "Player");
+                    return;
+                }
+                i++;
+            }
+
+            EventAggregator.OnEnemyAttack(enemyFairyNumber, playerFairyNumber, enemy.ActiveFairies[enemyFairyNumber].Spells[0], "Player");
         }
 
         private void ChoiceVictim(int effectiveness)
@@ -244,18 +276,24 @@ namespace Assets.Scripts
             var forwardFairy = forward.ActiveFairies[forwardFairyNumber];
             var victimFairy = victim.ActiveFairies[victimFairyNumber];
 
-            /*if (victimFairy.IsDead)
+            if (victimFairy.IsDead)
             {
                 return;
-            }*/
+            }
+
+            Debug.Log(spellName);
+            
             var spell = DataOfModels.OffensiveSpells[spellName];
 
+            Debug.Log((int) forwardFairy.Element + " " + (int) victimFairy.Element);
             var effectiveness = DataOfModels.TableOfEffectiveness[(int)forwardFairy.Element, (int)victimFairy.Element];
             ShowEffect(effectiveness);
 
             forwardFairy.Attack(victimFairy, spell);
 
             ReduceMana(spellName, forwardFairyNumber, forward.Name);
+            ReduceMana(victimFairy.Spells[1], victimFairyNumber, victim.Name);
+            ReduceMana(victimFairy.Spells[3], victimFairyNumber, victim.Name);
             StartCoroutine(GotoNewMove(victim.Name));
         }
 
@@ -331,14 +369,14 @@ namespace Assets.Scripts
             {
                 if (forward == "Player")
                 {
-                    if (PlayerSpells[fairy, i].Name == spell)
+                    if (PlayerSpells[fairy, i] != null && PlayerSpells[fairy, i].Name == spell)
                     {
                         PlayerSpells[fairy, i].Mana--;
                     }
                 }
                 else
                 {
-                    if (EnemySpells[fairy, i].Name == spell)
+                    if (EnemySpells[fairy, i] != null &&  EnemySpells[fairy, i].Name == spell)
                     {
                         EnemySpells[fairy, i].Mana--;
                     }

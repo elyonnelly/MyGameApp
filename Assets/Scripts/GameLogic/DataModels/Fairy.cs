@@ -99,7 +99,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         }
         public Fairy(string name, string description, Element element) : this()
         {
-            HealthPoint = 11 + (HitPoints) * 8;
+            HealthPoint = 11 + (HitPoints) * 8 + Level * (HitPoints * 2);
             Name = name;
             Description = description;
             Element = element;
@@ -108,7 +108,7 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         public Fairy()
         {
-            HealthPoint = 11 + (HitPoints) * 8;
+            HealthPoint = 11 + (HitPoints) * 8 + Level * (HitPoints * 2); ;
             Spells = new string[4];
             for (var i = 0; i < 4; i++)
             {
