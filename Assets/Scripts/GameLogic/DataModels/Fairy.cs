@@ -169,7 +169,7 @@ namespace Assets.Scripts.GameLogic.DataModels
         public bool AbilityToTakeCriticalHit { get; set; }
         public double DamageReduction { get; set; }
 
-        public static Fairy Default => new PlayerFairy();
+        public static Fairy Default => new Fairy();
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))

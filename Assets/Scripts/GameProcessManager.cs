@@ -20,7 +20,6 @@ namespace Assets.Scripts
         private Player player;
         private Player enemy;
         private Timer timer;
-        private string currentHero;
         private double allCurrentDamage;
         private void Awake()
         {
@@ -34,7 +33,6 @@ namespace Assets.Scripts
             FillSpellInfo(player, PlayerSpells);
             FillSpellInfo(enemy, EnemySpells);
 
-            currentHero = "player";
 
             EventAggregator.DisableFairy += OnDisableFairy;
             EventAggregator.ActivateFairy += OnActivateFairy;
