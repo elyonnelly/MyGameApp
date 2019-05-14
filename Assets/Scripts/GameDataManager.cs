@@ -36,9 +36,23 @@ namespace Assets.Scripts
         {
             try
             {
-                using (var reader = new StreamReader(@"player.json"))
+                if (File.Exists(Application.persistentDataPath + "/player.json"))
                 {
-                    PlayerData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                    using (var reader = new StreamReader(Application.persistentDataPath + "/player.json"))
+                    {
+                        PlayerData = JsonConvert.DeserializeObject<Player>(reader.ReadLine());
+                    }
+                }
+                else
+                {
+                    var player = Resources.Load<TextAsset>("player");
+                    PlayerData = JsonConvert.DeserializeObject<Player>(player.text);
+
+                    var file = File.Create(Application.persistentDataPath + "player.json");
+                    using (var writer = new StreamWriter(Application.persistentDataPath + "/player.json"))
+                    {
+                        writer.Write(JsonConvert.SerializeObject(PlayerData));
+                    }
                 }
             }
             catch (Exception ex)

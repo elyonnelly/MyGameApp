@@ -28,7 +28,7 @@ namespace Assets.Scripts.GUI
             Application.Quit();
             try
             {
-                using (var writer = new StreamWriter(@"player.json"))
+                using (var writer = new StreamWriter(Application.persistentDataPath + "/player.json"))
                 {
                     writer.Write(JsonConvert.SerializeObject(GameDataManager.Instance.PlayerData));
                 }
@@ -53,7 +53,7 @@ namespace Assets.Scripts.GUI
 
                 try
                 {
-                    using (var writer = new StreamWriter(@"player.json"))
+                    using (var writer = new StreamWriter(Application.persistentDataPath + "/player.json"))
                     {
                         writer.Write(JsonConvert.SerializeObject(GameDataManager.Instance.PlayerData));
                     }
