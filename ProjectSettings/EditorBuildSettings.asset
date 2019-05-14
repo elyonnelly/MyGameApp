@@ -20,10 +20,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PreBattle.unity
     guid: 1397ded7b1e02c6449f37c63cd51cf99
-  - enabled: 1
-    path: Assets/Winner Scene.unity
+  - enabled: 0
+    path: Assets/__DELETED_GUID_Trash/a15fe32af1a9cbc4493695865a3b4290
     guid: a15fe32af1a9cbc4493695865a3b4290
-  - enabled: 1
-    path: Assets/Losing Scene.unity
+  - enabled: 0
+    path: Assets/__DELETED_GUID_Trash/cbf4751b9d655504d9bd7822aa45d92e
     guid: cbf4751b9d655504d9bd7822aa45d92e
+  - enabled: 1
+    path: Assets/Scenes/Information Scene.unity
+    guid: 2b0bf84424ebec544a9b691d5632f5b9
+  - enabled: 1
+    path: Assets/Scenes/Winner Scene.unity
+    guid: 349a2ccd5f1030f4fb0cac60e3ca65e3
+  - enabled: 1
+    path: Assets/Scenes/Losing Scene.unity
+    guid: ad1c0b74f37f58841a97893db3689a95
+  - enabled: 1
+    path: Assets/Scenes/Rules Scene.unity
+    guid: c3f35452952f8db47b68dbf2c08fffe5
   m_configObjects: {}

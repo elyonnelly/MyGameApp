@@ -12,6 +12,7 @@ namespace Assets.Scripts.GUI
         private Vector3 offset;
         private bool isDrag;
         private bool isUsed;
+        //private Fairy fairy;
 
        
         void Start()
@@ -22,7 +23,7 @@ namespace Assets.Scripts.GUI
 
         void OnDestroy()
         {
-            //EventAggregator.RemoveSpell -= MakeUnused;
+            EventAggregator.RemoveSpell -= MakeUnused;
         }
 
         void OnMouseDown()
@@ -103,6 +104,7 @@ namespace Assets.Scripts.GUI
                 return;
             }
 
+
             if (DataOfModels.OffensiveSpells.ContainsKey(name))
             {
                 var offensiveSpell = DataOfModels.OffensiveSpells[name];
@@ -112,8 +114,10 @@ namespace Assets.Scripts.GUI
                     return;
                 }
 
-                if (Math.Ceiling( DataOfModels.Fairies[fairy.name].Level / 3.0) < offensiveSpell.Level)
+
+                if (Math.Ceiling(DataOfModels.Fairies[fairy.name].Level / 6.0) < offensiveSpell.Level)
                 {
+                    Debug.Log("aaa");
                     return;
                 }
             }

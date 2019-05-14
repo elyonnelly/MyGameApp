@@ -7,7 +7,6 @@ namespace Assets.Scripts.GameLogic.DataModels
     public enum Element
     {
         Nature,
-        None,
         Air,
         Water,
         Ligth,

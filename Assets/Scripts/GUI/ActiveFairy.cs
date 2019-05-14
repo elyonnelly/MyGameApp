@@ -72,6 +72,10 @@ namespace Assets.Scripts.GUI
             transform.position = initialPosition;
             IsEmpty = true;
             isDrag = false;
+            for(int i = 0; i < 4; i++)
+            {
+                transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Spells Icon/Defensive Spells/Empty Slot");
+            }
         }
 
     }

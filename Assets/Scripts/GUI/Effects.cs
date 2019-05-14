@@ -1,10 +1,7 @@
 ﻿using Assets.Scripts.GameLogic.DataModels;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.GUI
 {
-    /// <summary>
-    ///     Компонент, отвечающий за игровую логику по сути своей
-    /// </summary>
     public class Effects
     {
         public static CastEffect[] SetOfEffects = new CastEffect[]

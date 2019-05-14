@@ -15,6 +15,7 @@ namespace Assets.Scripts.GUI
         private Vector3 initialPosition;
         private Vector3 offset;
         private bool isDrag;
+        private Fairy fairy;
 
         private void Start()
         {
@@ -23,6 +24,19 @@ namespace Assets.Scripts.GUI
             Description = GameObject.FindGameObjectWithTag("FairyDescription").GetComponent<Text>();
             Photo = GameObject.FindGameObjectWithTag("FairyPhoto").GetComponent<SpriteRenderer>();
 
+
+            foreach (var fairy in GameDataManager.Instance.PlayerData.AllowFairies)
+            {
+                if (fairy.Name == name)
+                {
+                    this.fairy = fairy;
+                }
+            }
+
+        }
+        private void OnDestroy()
+        {
+            EventAggregator.DisableFairy -= MakeUnused;
         }
         private void OnMouseDown()
         {
@@ -92,6 +106,10 @@ namespace Assets.Scripts.GUI
         private void ChangeFairy(GameObject oldFairy, GameObject newFairy)
         {
             oldFairy.name = newFairy.name;
+            for (int i = 0; i < 4; i++)
+            {
+                oldFairy.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Spells Icon/Defensive Spells/Empty Slot");
+            }
             oldFairy.GetComponent<SpriteRenderer>().sprite = newFairy.GetComponent<SpriteRenderer>().sprite;
             oldFairy.GetComponent<ActiveFairy>().IsEmpty = false;
         }
@@ -113,9 +131,5 @@ namespace Assets.Scripts.GUI
             isDrag = false;
         }
 
-        private void OnDestroy()
-        {
-            EventAggregator.DisableFairy -= MakeUnused;
-        }
     }
 }
