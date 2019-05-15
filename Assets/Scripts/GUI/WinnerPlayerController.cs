@@ -2,9 +2,8 @@
 
 namespace Assets.Scripts.GUI
 {
-    public class WinnerPlayerComponent : MonoBehaviour
+    public class WinnerPlayerController : MonoBehaviour
     {
-        // Start is called before the first frame update
         void Start()
         {
             var player = GameDataManager.Instance.PlayerData;
@@ -17,10 +16,6 @@ namespace Assets.Scripts.GUI
             }
         }
 
-        // Update is called once per frame
-        void Update()
-        {
         
-        }
     }
 }

@@ -5,28 +5,27 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
-    public class AllowSpell : MonoBehaviour
+    public class AllowSpellController : MonoBehaviour, IDragHandler, ICollisionHandler
     {
         public Text Info;
         private Vector3 initialPosition;
         private Vector3 offset;
         private bool isDrag;
         private bool isUsed;
-        //private Fairy fairy;
 
-       
+
         void Start()
         {
             EventAggregator.RemoveSpell += MakeUnused;
             Info = GameObject.FindGameObjectWithTag("SpellInfo").GetComponent<Text>();
         }
 
-        void OnDestroy()
+        void OnDisable()
         {
             EventAggregator.RemoveSpell -= MakeUnused;
         }
 
-        void OnMouseDown()
+        public void OnMouseDown()
         {
             if (isUsed)
             {
@@ -60,7 +59,7 @@ namespace Assets.Scripts.GUI
             }
         }
 
-        private void OnMouseUp()
+        public void OnMouseUp()
         {
             if (isUsed)
             {
@@ -72,33 +71,33 @@ namespace Assets.Scripts.GUI
             isDrag = false;
         }
 
-        private void OnMouseDrag()
+        public void OnMouseDrag()
         {
             if (isUsed)
             {
                 return;
             }
-            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y,  10);
+            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             var curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
             transform.position = curPosition;
         }
 
-        private void OnTriggerEnter2D(Collider2D collider)
+        public void OnTriggerEnter2D(Collider2D collider)
         {
             if (collider.tag != "Active Spell")
             {
                 return;
             }
-            
-            var fairy = collider.GetComponentInParent<ActiveFairy>();
-            var spell = collider.GetComponent<ActiveSpell>();
+
+            var fairy = collider.GetComponentInParent<ActiveFairyController>();
+            var spell = collider.GetComponent<ActiveSpellController>();
 
             if (spell.Type == "Offensive" && DataOfModels.DefensiveSpells.ContainsKey(name) ||
                 spell.Type == "Defensive" && DataOfModels.OffensiveSpells.ContainsKey(name))
             {
                 return;
             }
-            
+
             if (fairy.IsEmpty)
             {
                 return;
@@ -108,8 +107,7 @@ namespace Assets.Scripts.GUI
             if (DataOfModels.OffensiveSpells.ContainsKey(name))
             {
                 var offensiveSpell = DataOfModels.OffensiveSpells[name];
-                if (offensiveSpell.MajorElement != DataOfModels.Fairies[fairy.name].Element &&
-                    offensiveSpell.MinorElement != DataOfModels.Fairies[fairy.name].Element)
+                if (offensiveSpell.MajorElement != DataOfModels.Fairies[fairy.name].Element)
                 {
                     return;
                 }
@@ -117,7 +115,6 @@ namespace Assets.Scripts.GUI
 
                 if (Math.Ceiling(DataOfModels.Fairies[fairy.name].Level / 6.0) < offensiveSpell.Level)
                 {
-                    Debug.Log("aaa");
                     return;
                 }
             }
@@ -137,30 +134,31 @@ namespace Assets.Scripts.GUI
 
             }
 
-            if (!collider.GetComponent<ActiveSpell>().IsEmpty)
+            if (!collider.GetComponent<ActiveSpellController>().IsEmpty)
             {
                 EventAggregator.OnRemoveSpell(fairy.Number, spell.Number, spell.gameObject.name);
             }
             EventAggregator.OnAddSpell(fairy.Number, spell.Number, gameObject.name);
-            
-            ChangeActiveSpell(collider.gameObject, gameObject);
+
+            ChangeObject(collider.gameObject, gameObject);
             MakeUsed();
         }
 
-        void ChangeActiveSpell(GameObject oldSpell, GameObject newSpell)
+        public void ChangeObject(GameObject oldSpell, GameObject newSpell)
         {
             oldSpell.GetComponent<SpriteRenderer>().sprite = newSpell.GetComponent<SpriteRenderer>().sprite;
             oldSpell.name = newSpell.name;
-            oldSpell.GetComponent<ActiveSpell>().IsEmpty = false;
+            oldSpell.GetComponent<ActiveSpellController>().IsEmpty = false;
         }
 
-        void MakeUsed()
+        public void MakeUsed()
         {
             initialPosition.z += 2;
             transform.position = initialPosition;
             isUsed = true;
             isDrag = false;
         }
+
 
         void MakeUnused(int fairyPosition, int spellPosition, string name)
         {

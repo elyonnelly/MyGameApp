@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
-    public class BattleEnemySpell : MonoBehaviour
+    public class BattleEnemySpellController : MonoBehaviour
     {
         // Start is called before the first frame update
         public Text Info;
@@ -14,11 +14,10 @@ namespace Assets.Scripts.GUI
 
         void Start()
         {
-            var fairyNumber = GetComponentInParent<EnemyFairyComponent>().Number;
+            var fairyNumber = GetComponentInParent<EnemyFairyController>().Number;
             spell = GameProcessManager.EnemySpells[fairyNumber, Number];
             if (SceneManager.GetActiveScene().name == "PreBattle")
             {
-                //Debug.Log(name);
                 Info.GetComponent<Text>().text = "";
                 if (DataOfModels.DefensiveSpells.ContainsKey(name))
                 {
@@ -32,8 +31,7 @@ namespace Assets.Scripts.GUI
             }
             else
             {
-
-                Info.GetComponent<Text>().text = spell.Mana.ToString();
+                Info.GetComponent<Text>().text = spell.Mana == 0 ? "-" : spell.Mana.ToString();
             }
         }
 
@@ -41,7 +39,7 @@ namespace Assets.Scripts.GUI
         {
             if (SceneManager.GetActiveScene().name == "Battlefield Scene")
             {
-                Info.GetComponent<Text>().text = spell.Mana.ToString();
+                Info.GetComponent<Text>().text = spell.Mana == 0 ? "-" : spell.Mana.ToString();
             }
         }
     }

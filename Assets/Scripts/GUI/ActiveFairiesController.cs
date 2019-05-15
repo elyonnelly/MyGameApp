@@ -2,9 +2,9 @@
 
 namespace Assets.Scripts.GUI
 {
-    public class ActiveFairies : MonoBehaviour
+    public class ActiveFairiesController : MonoBehaviour
     {
-        void Start()
+        private void Start()
         {
             var i = 0;
 
@@ -22,24 +22,19 @@ namespace Assets.Scripts.GUI
 
                 i++;
             }
-
         }
 
-        void FillInfoAboutSpell( Transform fairy,int  index, string name, string type)
+        private void FillInfoAboutSpell(Transform fairy, int index, string name, string type)
         {
             var spellObject = fairy.transform.GetChild(index);
             spellObject.name = name;
             if (name != "Empty Slot")
             {
-                spellObject.GetComponent<ActiveSpell>().IsEmpty = false;
+                spellObject.GetComponent<ActiveSpellController>().IsEmpty = false;
             }
+
             spellObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Sprites/Spells Icon/{type}/{name}");
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 }

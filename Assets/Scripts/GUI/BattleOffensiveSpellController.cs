@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
-    public class BattleSpell : MonoBehaviour
+    public class BattleOffensiveSpellController : MonoBehaviour, IDragHandler
     {
         // Start is called before the first frame update
         public GameObject Sparkle;
-        public GameObject Mana;
+        public GameObject Info;
         public int Number;
         public bool Inactive;
 
@@ -18,47 +18,13 @@ namespace Assets.Scripts.GUI
         private Vector3 initialPosition;
         private Vector3 offset;
         private List<GameObject> sparkles;
-        private int deltaTime = 0;
+        private int deltaTime;
         private Spell spell;
         private int fairyNumber;
 
-
-        void Start()
+        public void OnMouseDown()
         {
-            sparkles = new List<GameObject>();
-            if (name == "Empty Slot")
-            {
-                isEmpty = true;
-            }
-
-
-            fairyNumber = GetComponentInParent<FairyComponent>().Number;
-            spell = GameProcessManager.PlayerSpells[fairyNumber, Number];
-
-            Mana.GetComponent<Text>().text = spell.Mana.ToString();
-
-            EventAggregator.FairyAttack += EventAggregatorFairyAttack;
-        }
-
-        void OnDisable()
-        {
-            EventAggregator.FairyAttack -= EventAggregatorFairyAttack;
-        }
-
-        private void EventAggregatorFairyAttack(int forwardFairy, int victimFairy, string spell, string victim)
-        {
-
-            foreach (var sparkle in sparkles)
-            {
-                Destroy(sparkle);
-            }
-
-            isDrag = false;
-        }
-
-        void OnMouseDown()
-        {
-            if (isEmpty || Inactive)
+            if (isEmpty || Inactive || spell.Mana == 0)
             {
                 return;
             }
@@ -71,13 +37,11 @@ namespace Assets.Scripts.GUI
             }
 
             offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
-
         }
 
-        private void OnMouseDrag()
+        public void OnMouseDrag()
         {
-
-            if (isEmpty || Inactive || !isDrag)
+            if (isEmpty || Inactive || !isDrag || spell.Mana == 0)
             {
                 return;
             }
@@ -88,16 +52,16 @@ namespace Assets.Scripts.GUI
             if (deltaTime % 10 == 0)
             {
                 var sparkle = Instantiate(Sparkle, curPosition, Quaternion.identity);
-                sparkle.GetComponent<Sparkle>().AttackingFairy = transform.GetComponentInParent<FairyComponent>().Number;
-                sparkle.GetComponent<Sparkle>().Spell = name;
+                sparkle.GetComponent<SparkleComponent>().AttackingFairy = transform.GetComponentInParent<FairyController>().Number;
+                sparkle.GetComponent<SparkleComponent>().Spell = name;
 
                 sparkles.Add(sparkle);
             }
         }
-        private void OnMouseUp()
-        {
 
-            if (isEmpty || Inactive)
+        public void OnMouseUp()
+        {
+            if (isEmpty || Inactive || spell.Mana == 0)
             {
                 return;
             }
@@ -106,17 +70,50 @@ namespace Assets.Scripts.GUI
             {
                 Destroy(sparkle);
             }
+
             isDrag = false;
         }
 
-        void Update()
+        private void Start()
+        {
+            sparkles = new List<GameObject>();
+            if (name == "Empty Slot")
+            {
+                isEmpty = true;
+            }
+
+            fairyNumber = GetComponentInParent<FairyController>().Number;
+            spell = GameProcessManager.PlayerSpells[fairyNumber, Number];
+
+            Info.GetComponent<Text>().text = spell.Mana == 0 ? "-" : spell.Mana.ToString();
+
+            EventAggregator.FairyAttack += EventAggregatorFairyAttack;
+        }
+
+        private void OnDisable()
+        {
+            EventAggregator.FairyAttack -= EventAggregatorFairyAttack;
+        }
+
+        private void EventAggregatorFairyAttack(int forwardFairy, int victimFairy, string spell, string victim)
+        {
+            foreach (var sparkle in sparkles)
+            {
+                Destroy(sparkle);
+            }
+
+            isDrag = false;
+        }
+
+        private void Update()
         {
             deltaTime++;
             if (GameDataManager.Instance.PlayerData.ActiveFairies[fairyNumber].IsDead)
             {
                 Inactive = true;
             }
-            Mana.GetComponent<Text>().text = spell.Mana.ToString();
+
+            Info.GetComponent<Text>().text = spell.Mana == 0 ? "-" : spell.Mana.ToString();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Assets.Scripts.GameLogic.DataModels;
+﻿using Assets.Scripts.GameLogic.DataModels;
 using UnityEngine;
 
 namespace Assets.Scripts.GUI
@@ -44,9 +43,5 @@ namespace Assets.Scripts.GUI
             }
         }
 
-        void Update()
-        {
-        
-        }
     }
 }

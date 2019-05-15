@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.GUI
 {
-    public class ActiveSpell : MonoBehaviour
+    public class ActiveSpellController : MonoBehaviour
     {
         public bool IsEmpty;
         public int Number;
@@ -37,10 +37,9 @@ namespace Assets.Scripts.GUI
                 return;
             }
 
-            var fairy = transform.GetComponentInParent<ActiveFairy>();
+            var fairy = transform.GetComponentInParent<ActiveFairyController>();
             if (!IsEmpty)
             {
-                Debug.Log("a");
                 EventAggregator.OnRemoveSpell(fairy.Number, Number, gameObject.name);
             }
 

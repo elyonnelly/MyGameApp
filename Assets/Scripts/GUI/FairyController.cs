@@ -4,9 +4,8 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
-    public class FairyComponent : MonoBehaviour
+    public class FairyController : MonoBehaviour
     {
-        // Start is called before the first frame update
         public Text FairyInfo;
         public int Number;
         private Fairy fairy;
@@ -16,7 +15,6 @@ namespace Assets.Scripts.GUI
             FairyInfo.text = fairy.GetState();
         }
 
-        // Update is called once per frame
         void Update()
         {
             FairyInfo.text = fairy.GetState();

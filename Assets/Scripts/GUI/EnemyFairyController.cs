@@ -7,10 +7,8 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
-    public class EnemyFairyComponent : MonoBehaviour
+    public class EnemyFairyController : MonoBehaviour
     {
-        // Start is called before the first frame update
-
         public Text FairyInfo;
         public int Number;
         private Fairy fairy;
@@ -31,7 +29,6 @@ namespace Assets.Scripts.GUI
             EventAggregator.EnemyAttack -= Attack;
         }
 
-        // Update is called once per frame
         void Update()
         {
             FairyInfo.text = fairy.GetState();
@@ -43,19 +40,13 @@ namespace Assets.Scripts.GUI
             {
                 return;
             }
-
-            //иначе нужно нарисовать искорки
-
-            var sparkles = new List<GameObject>();
-            var position = new Vector3();
-            position = transform.GetChild(0).name == spell ? transform.GetChild(0).transform.position : transform.GetChild(2).transform.position;
+            
+            var position = transform.GetChild(0).name == spell ? transform.GetChild(0).transform.position : transform.GetChild(2).transform.position;
             var victimPosition = GameObject.FindGameObjectWithTag("Player").transform.GetChild(victimFairy).transform.position;
-            //Debug.Log(victimPosition);
+            
             var directionVector = (victimPosition - transform.position) /5;
 
             StartCoroutine(ShowMagic(position, directionVector, victimPosition));
-
-
         }
 
         private IEnumerator ShowMagic(Vector3 position, Vector3 directionVector, Vector3 victimPosition)

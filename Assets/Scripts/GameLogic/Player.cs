@@ -6,16 +6,13 @@ namespace Assets.Scripts.GameLogic
     public class Player
     {
         public string Name { get; set; }
-        public Player(List<Fairy> activeFairies, List<Fairy> allowFairies, int currentStage)
-        {
-            ActiveFairies = activeFairies;
-            AllowFairies = allowFairies;
-            CurrentStage = currentStage;
-
-        }
-
+        
         public Player()
         {
+            ActiveFairies = new List<Fairy>();
+            AllowFairies = new List<Fairy>();
+            AllowDefensiveSpells = new List<string>();
+            AllowOffensiveSpells = new List<string>();
         }
 
         public List<Fairy> ActiveFairies { get; set; }
@@ -23,7 +20,6 @@ namespace Assets.Scripts.GameLogic
         public List<string> AllowDefensiveSpells { get; set; }
 
         public List<string> AllowOffensiveSpells { get; set; }
-        public int CurrentStage { set; get; }
 
     }
 }

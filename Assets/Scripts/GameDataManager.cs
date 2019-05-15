@@ -5,17 +5,17 @@ using Assets.Scripts.GameLogic;
 using Assets.Scripts.GameLogic.DataModels;
 using Newtonsoft.Json;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Assets.Scripts
 {
-
     public class GameDataManager : MonoBehaviour
     {
         public static GameDataManager Instance;
-        public Player PlayerData;
-        public Player EnemyData;
-        private Guid guid = Guid.NewGuid();
-        private System.Random randomizer = new System.Random();
+
+        private readonly Random randomizer = new Random();
+        public Player PlayerData { set; get; }
+        public Player EnemyData { set; get; }
 
         private void Awake()
         {
@@ -27,12 +27,12 @@ namespace Assets.Scripts
             Initialize();
         }
 
-        void Destroy()
+        private void Destroy()
         {
             Destroy(gameObject);
         }
 
-        void Initialize()
+        private void Initialize()
         {
             try
             {
@@ -60,62 +60,63 @@ namespace Assets.Scripts
                 Debug.Log(ex.Message);
             }
 
-            EnemyData = new Player();
-            EnemyData.ActiveFairies = new System.Collections.Generic.List<Fairy>();
+            EnemyData = new Player {ActiveFairies = new List<Fairy>()};
             var fairies = new string[DataOfModels.Fairies.Count];
             DataOfModels.Fairies.Keys.CopyTo(fairies, 0);
             var middleLevel = 0;
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 middleLevel += PlayerData.ActiveFairies[i].Level;
             }
+
             middleLevel /= 5;
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                EnemyData.ActiveFairies.Add((Fairy)DataOfModels.Fairies[fairies[randomizer.Next(73)]].Clone());
+                EnemyData.ActiveFairies.Add((Fairy) DataOfModels.Fairies[fairies[randomizer.Next(fairies.Length)]].Clone());
                 var fairy = EnemyData.ActiveFairies[i];
-                fairy.Level = randomizer.Next(middleLevel - 2, middleLevel + 1);
+                fairy.Level = randomizer.Next(Math.Max(1, middleLevel - 2), middleLevel + 2);
                 fairy.Spells = new string[4];
-                for (int j = 0; j < 4; j++)
+                for (var j = 0; j < 4; j++)
                 {
                     fairy.Spells[j] = "Empty Slot";
                 }
+
                 foreach (var spell in DataOfModels.OffensiveSpells.Values)
                 {
-                      
-                    if ((spell.MajorElement == fairy.Element || spell.MinorElement == fairy.Element) && fairy.Level / 4.0 <= spell.Level)
+                    if (spell.MajorElement != fairy.Element || !(Math.Ceiling(fairy.Level / 6.0) >= spell.Level))
                     {
-                        if (fairy.Spells[0] == "Empty Slot")
-                        {
-                            fairy.Spells[0] = spell.Name;
-                        }
-                        else
-                        {
-                            fairy.Spells[2] = spell.Name;
-                        }
+                        continue;
+                    }
+
+                    if (fairy.Spells[0] == "Empty Slot")
+                    {
+                        fairy.Spells[0] = spell.Name;
+                    }
+                    else
+                    {
+                        fairy.Spells[2] = spell.Name;
                     }
                 }
 
                 foreach (var spell in DataOfModels.DefensiveSpells.Values)
                 {
-                    if ((spell.MajorElement == fairy.Element || spell.MinorElement == fairy.Element) && fairy.Level / 4.0 <= spell.Level)
+                    if (spell.MajorElement != fairy.Element || !(Math.Ceiling(fairy.Level / 6.0) >= spell.Level))
                     {
-                        if (fairy.Spells[1] == null)
-                        {
-                            fairy.Spells[1] = spell.Name;
-                        }
-                        else
-                        {
-                            fairy.Spells[3] = spell.Name;
-                        }
+                        continue;
+                    }
+
+                    if (fairy.Spells[1] == "Empty Slot")
+                    {
+                        fairy.Spells[1] = spell.Name;
+                    }
+                    else
+                    {
+                        fairy.Spells[3] = spell.Name;
                     }
                 }
             }
-
         }
-
-
     }
 }

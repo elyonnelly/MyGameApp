@@ -1,19 +1,32 @@
-﻿using Assets.Scripts.GameLogic.DataModels;
-
-namespace Assets.Scripts.GUI
+﻿namespace Assets.Scripts.GameLogic.DataModels
 {
     public class Effects
     {
         public static CastEffect[] SetOfEffects = new CastEffect[]
         {
-            Effect0, Effect1, Effect2, Effect3, Effect4, Effect5,Effect6,Effect7,Effect8,Effect9,Effect10,Effect11,Effect12,Effect13,Effect14
+            Effect0, Effect1, Effect2, Effect3, Effect4, Effect5, Effect6, Effect7, Effect8, Effect9, Effect10, Effect11, Effect12, Effect13, Effect14
         };
     
         public delegate void CastEffect(Fairy attacker, Fairy victim, Spell spell);
 
+
+        private static double EfficiencyCoefficient(Fairy attacker, Fairy victim)
+        {
+            if (DataOfModels.TableOfEffectiveness[(int)attacker.Element, (int)victim.Element] == 1)
+            {
+                return 1.8;
+            }
+            if (DataOfModels.TableOfEffectiveness[(int)attacker.Element, (int)victim.Element] == -1)
+            {
+                return 0.2;
+            }
+
+            return 1;
+        }
         public static void Effect0(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
         }
 
         /// <summary>
@@ -24,7 +37,8 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect1(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.HealthPoint -= (spell.Characteristic + ((OffensiveSpell) spell).Damage) * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.HealthPoint -= (spell.Characteristic + ((OffensiveSpell) spell).Damage) * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
         }
 
         /// <summary>
@@ -35,7 +49,8 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect2(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.HealthPoint -= spell.Characteristic * ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.HealthPoint -= spell.Characteristic * ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
         }
 
         /// <summary>
@@ -46,8 +61,9 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect3(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
-            victim.RateFactor = spell.Characteristic;
+            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
+                //victim.RateFactor = spell.Characteristic;
         }
 
         /// <summary>
@@ -58,9 +74,9 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect4(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.Wound = "Glaciation"; //минус все показатели вероятно.
-            //вызов ивента на нарисовать спрайт?
-            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.Wound = "Glaciation";
+            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
             victim.RateFactor = 0.8;
             victim.DamageCoefficient = 0.8;
         }
@@ -73,9 +89,9 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect5(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.Wound = "Blindness"; //минус все показатели вероятно.
-            //вызов ивента на нарисовать спрайт?
-            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.Wound = "Blindness";
+            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
             victim.RateFactor = 0;
             victim.DamageCoefficient = 0;
         }
@@ -88,9 +104,9 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect6(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.Wound = "Burning"; //минус все показатели вероятно.
-            //вызов ивента на нарисовать спрайт?
-            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.Wound = "Burning"; 
+            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
             victim.RateFactor = 0;
             victim.DamageCoefficient = 0;
         }
@@ -103,7 +119,8 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect7(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
             victim.RateFactor = 0;
             victim.DamageCoefficient = 0;
         }
@@ -116,7 +133,8 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect8(Fairy attacker, Fairy victim, Spell spell)
         {
-            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction;
+            victim.HealthPoint -= ((OffensiveSpell) spell).Damage * attacker.DamageCoefficient * victim.DamageReduction
+                                  * EfficiencyCoefficient(attacker, victim);
             victim.AbilityToCriticalHit = false;
         }
 
@@ -161,7 +179,7 @@ namespace Assets.Scripts.GUI
         /// <param name="spell"></param>
         public static void Effect12(Fairy attacker, Fairy victim, Spell spell)
         {
-            attacker.RateFactor = spell.Characteristic;
+            attacker.DamageCoefficient = spell.Characteristic;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Timers;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Assets.Scripts.GameLogic;
 using Assets.Scripts.GameLogic.DataModels;
 using Assets.Scripts.GUI;
@@ -18,21 +19,17 @@ namespace Assets.Scripts
         private static readonly Random randomizer = new Random();
 
         private Player player;
+
         private Player enemy;
-        private Timer timer;
-        private double allCurrentDamage;
+
         private void Awake()
         {
             player = GameDataManager.Instance.PlayerData;
             player.Name = "Player";
             enemy = GameDataManager.Instance.EnemyData;
             enemy.Name = "Enemy";
-            timer = new Timer(180000); // 3 минуты
-            timer.Elapsed += NewMoveFromTimer;
-            timer.Enabled = true;
             FillSpellInfo(player, PlayerSpells);
             FillSpellInfo(enemy, EnemySpells);
-
 
             EventAggregator.DisableFairy += OnDisableFairy;
             EventAggregator.ActivateFairy += OnActivateFairy;
@@ -42,7 +39,7 @@ namespace Assets.Scripts
             EventAggregator.EnemyAttack += OnFairyAttackEvent;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             EventAggregator.DisableFairy -= OnDisableFairy;
             EventAggregator.ActivateFairy -= OnActivateFairy;
@@ -51,7 +48,6 @@ namespace Assets.Scripts
             EventAggregator.FairyAttack -= OnFairyAttackEvent;
             EventAggregator.EnemyAttack -= OnFairyAttackEvent;
         }
-
 
         private void FillSpellInfo(Player hero, Spell[,] spells)
         {
@@ -83,7 +79,9 @@ namespace Assets.Scripts
             VictoryCheck(player);
             VictoryCheck(enemy);
         }
-        void VictoryCheck(Player hero)
+
+
+        private void VictoryCheck(Player hero)
         {
             var count = 0;
             foreach (var fairy in hero.ActiveFairies)
@@ -93,34 +91,62 @@ namespace Assets.Scripts
                     count++;
                 }
             }
-            if (count == 5)
+
+            if (count != 5)
             {
-                var winner = hero.Name == "Player" ? "Enemy" : "Player";
-                if (winner == "Player")
+                count = 0;
+                if (hero.Name == "Player")
                 {
+                    foreach (var spell in PlayerSpells)
+                    {
+                        if (spell.Mana <= 0)
+                        {
+                            count++;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var spell in EnemySpells)
+                    {
+                        if (spell.Mana <= 0)
+                        {
+                            count++;
+                        }
+                    }
+                }
+                if (count != 5)
+                {
+                    return;
+                }
+            }
+
+            var winner = hero.Name == "Player" ? "Enemy" : "Player";
+            switch (winner)
+            {
+                case "Player":
                     RecoverFairy();
                     GiveAwards();
                     SceneManager.LoadScene("Winner Scene");
-                }
-                if (winner == "Enemy")
-                {
+                    break;
+                case "Enemy":
                     RecoverFairy();
                     SceneManager.LoadScene("Losing Scene");
-                }
-
-                EventAggregator.OnVictoryInBattle(winner);
+                    break;
             }
+
+            EventAggregator.OnVictoryInBattle(winner);
         }
 
-
-        void RecoverFairy()
+        private void RecoverFairy()
         {
             foreach (var fairy in player.ActiveFairies)
             {
-                fairy.HealthPoint = 11 + (fairy.HitPoints) * 8 + fairy.Level * (fairy.HitPoints * 2); 
+                fairy.HealthPoint = 11 + fairy.HitPoints * 8 + fairy.Level * fairy.HitPoints * 2;
             }
         }
-        void GiveAwards()
+
+        private void GiveAwards()
         {
             foreach (var fairy in player.ActiveFairies)
             {
@@ -135,16 +161,14 @@ namespace Assets.Scripts
                         fairy.ExperiencePoints += 3;
                     }
                 }
-
-                Debug.Log(fairy.ExperiencePoints);
-
             }
-        }
 
-        private void NewMoveFromTimer(object source, ElapsedEventArgs e)
-        {
-            ShowEffect("Time is over!");
-            NewMove("Enemy");
+            if (randomizer.Next(2) == 0 && player.AllowFairies.Count < 70)
+            {
+                var fairies = new Fairy[DataOfModels.Fairies.Count];
+                DataOfModels.Fairies.Values.CopyTo(fairies, 0);
+                player.AllowFairies.Add((Fairy)fairies[player.AllowFairies.Count].Clone());
+            }
         }
 
         private void NewMove(string hero)
@@ -165,12 +189,12 @@ namespace Assets.Scripts
         {
             foreach (var fairy in GameObject.FindGameObjectsWithTag("Player Fairy"))
             {
-                //foreach(var spell in fairy.GetComponentsInChildren<BattleSpell>())
+                //foreach(var spell in fairy.GetComponentsInChildren<BattleOffensiveSpellController>())
                 for (var i = 0; i < fairy.transform.childCount; i++)
                 {
                     if (i % 2 == 0)
                     {
-                        fairy.transform.GetChild(i).gameObject.GetComponent<BattleSpell>().Inactive = true;
+                        fairy.transform.GetChild(i).gameObject.GetComponent<BattleOffensiveSpellController>().Inactive = true;
                     }
                 }
             }
@@ -184,7 +208,7 @@ namespace Assets.Scripts
                 {
                     if (i % 2 == 0)
                     {
-                        fairy.transform.GetChild(i).gameObject.GetComponent<BattleSpell>().Inactive = false;
+                        fairy.transform.GetChild(i).gameObject.GetComponent<BattleOffensiveSpellController>().Inactive = false;
                     }
                 }
             }
@@ -192,80 +216,125 @@ namespace Assets.Scripts
 
         private void EnemyMove()
         {
-            ChoiceVictim();
+            var newNumber = randomizer.Next(10);
+
+            if (newNumber < 4)
+            {
+                ChoiceVictim(1);
+            }
+            else if (newNumber >= 4 && newNumber < 7)
+            {
+                ChoiceVictim(0);
+            }
+            else if (newNumber >= 7 && newNumber < 8)
+            {
+                ChoiceVictim(-1);
+            }
+            else
+            {
+                var fNum = randomizer.Next(5);
+                EventAggregator.OnEnemyAttack(fNum, randomizer.Next(5), enemy.ActiveFairies[fNum].Spells[0] != "EmptySlot" ? enemy.ActiveFairies[fNum].Spells[0] : enemy.ActiveFairies[fNum].Spells[2], "Player");
+
+            }
+
+
             NewMove("Player");
         }
 
-        private void ChoiceVictim()
+        private bool ChoiceVictim(int effectiveness)
         {
-            var enemyFairyNumber = randomizer.Next(5);
-            while (enemy.ActiveFairies[enemyFairyNumber].IsDead)
-            {
-                enemyFairyNumber = randomizer.Next(5);
-            }
-
-            var playerFairyNumber = randomizer.Next(5);
-            while (player.ActiveFairies[playerFairyNumber].IsDead)
-            {
-                playerFairyNumber = randomizer.Next(5);
-            }
-
-            var enemyFairy = enemy.ActiveFairies[enemyFairyNumber];
-
             var i = 0;
-            foreach (var playerFairy in player.ActiveFairies)
+            var j = 0;
+            var attacks = new List<Attack>();
+
+            foreach (var enemyFairy in enemy.ActiveFairies)
             {
-                Debug.Log((int)enemyFairy.Element + " " + (int)playerFairy.Element);
-                if (DataOfModels.TableOfEffectiveness[(int)enemyFairy.Element, (int)playerFairy.Element] == 1)
+                j = 0;
+                foreach (var playerFairy in player.ActiveFairies)
                 {
-                    playerFairyNumber = i;
-                    EventAggregator.OnEnemyAttack(enemyFairyNumber, playerFairyNumber, enemy.ActiveFairies[enemyFairyNumber].Spells[0], "Player");
-                    return;
+                    if (DataOfModels.TableOfEffectiveness[(int)enemyFairy.Element, (int)playerFairy.Element] == effectiveness)
+                    {
+                        if (enemyFairy.Spells[0] != "Empty Slot" && EnemySpells[i, 0].Mana > 0)
+                        {
+                            attacks.Add(new Attack(i, j, EnemySpells[i, 0]));
+                        }
+
+                        if (enemyFairy.Spells[2] != "Empty Slot" && EnemySpells[i, 2].Mana > 0)
+                        {
+                            attacks.Add(new Attack(i, j, EnemySpells[i, 2]));
+                        }
+                    }
+
+                    j++;
                 }
+
                 i++;
             }
 
-            i = 0;
-            foreach (var playerFairy in player.ActiveFairies)
+            var choiceAttack = new Attack();
+            var newNumber = randomizer.Next(10);
+            if (newNumber < 4)
             {
-                if (DataOfModels.TableOfEffectiveness[(int)enemyFairy.Element, (int)playerFairy.Element] == 0)
+                var damage = 0.0;
+                foreach (var attack in attacks)
                 {
-                    playerFairyNumber = i;
-                    EventAggregator.OnEnemyAttack(enemyFairyNumber, playerFairyNumber, enemy.ActiveFairies[enemyFairyNumber].Spells[0], "Player");
-                    return;
+                    if (DataOfModels.OffensiveSpells[attack.Spell.Name].Damage * enemy.ActiveFairies[attack.Forward].LevelCoefficient > damage)
+                    {
+                        damage = DataOfModels.OffensiveSpells[attack.Spell.Name].Damage * enemy.ActiveFairies[attack.Forward].LevelCoefficient;
+                        choiceAttack = attack;
+                    }
                 }
-                i++;
+            }
+            else if (newNumber >= 4 && newNumber < 7)
+            {
+                var maxHP = 0.0;
+                foreach (var attack in attacks)
+                {
+                    if (player.ActiveFairies[attack.Victim].HealthPoint > maxHP)
+                    {
+                        maxHP = player.ActiveFairies[attack.Victim].HealthPoint;
+                        choiceAttack = attack;
+                    }
+                }
+            }
+            else if (newNumber >= 7 && newNumber < 9)
+            {
+                var minHP = 30.0;
+                foreach (var attack in attacks)
+                {
+                    if (player.ActiveFairies[attack.Victim].HealthPoint < minHP)
+                    {
+                        minHP = player.ActiveFairies[attack.Victim].HealthPoint;
+                        choiceAttack = attack;
+                    }
+                }
+            }
+            else
+            {
+                choiceAttack = attacks[randomizer.Next(attacks.Count)];
             }
 
-            EventAggregator.OnEnemyAttack(enemyFairyNumber, playerFairyNumber, enemy.ActiveFairies[enemyFairyNumber].Spells[0], "Player");
+            if (choiceAttack.WasChoice)
+            {
+                EventAggregator.OnEnemyAttack(choiceAttack.Forward, choiceAttack.Victim, choiceAttack.Spell.Name, "Player");
+                return true;
+            }
+
+            return false;
         }
 
-        private void ChoiceVictim(int effectiveness)
+        private void CastDefensiveSpells(Fairy fairy, Spell spell1, Spell spell2)
         {
-            for (var i = 0; i < 5; i++)
+            if (spell1.Mana > 0)
             {
-                for (var j = 0; j < 5; j++)
-                {
-                    var enemyFairy = enemy.ActiveFairies[i];
-                    var playerFairy = player.ActiveFairies[j];
+                var defensiveSpellI = DataOfModels.DefensiveSpells[spell1.Name];
+                Effects.SetOfEffects[Math.Min((int)defensiveSpellI.Effect, 13)](fairy, fairy, defensiveSpellI);
+            }
 
-                    if (DataOfModels.TableOfEffectiveness[(int)enemyFairy.Element, (int)playerFairy.Element] != effectiveness || playerFairy.IsDead)
-                    {
-                        continue;
-                    }
-
-                    if (randomizer.Next(2) == 0 && enemyFairy.Spells[0] != "Empty Slot")
-                    {
-                        EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[0], "Player");
-                        return;
-                    }
-
-                    if (enemyFairy.Spells[2] != "Empty Slot")
-                    {
-                        EventAggregator.OnEnemyAttack(i, j, enemyFairy.Spells[2], "Player");
-                        return;
-                    }
-                }
+            if (spell2.Mana > 0)
+            {
+                var defensiveSpellII = DataOfModels.DefensiveSpells[spell2.Name];
+                Effects.SetOfEffects[Math.Min((int)defensiveSpellII.Effect, 13)](fairy, fairy, defensiveSpellII);
             }
         }
 
@@ -279,15 +348,30 @@ namespace Assets.Scripts
                 return;
             }
 
-            Debug.Log(spellName);
-            
+            if (forward.Name == "Player")
+            {
+                CastDefensiveSpells(forwardFairy, PlayerSpells[forwardFairyNumber, 1], PlayerSpells[forwardFairyNumber, 3]);
+            }
+            else
+            {
+                CastDefensiveSpells(forwardFairy, EnemySpells[forwardFairyNumber, 1], EnemySpells[forwardFairyNumber, 3]);
+            }
+
             var spell = DataOfModels.OffensiveSpells[spellName];
 
-            Debug.Log((int) forwardFairy.Element + " " + (int) victimFairy.Element);
             var effectiveness = DataOfModels.TableOfEffectiveness[(int)forwardFairy.Element, (int)victimFairy.Element];
             ShowEffect(effectiveness);
 
             forwardFairy.Attack(victimFairy, spell);
+
+            if (victim.Name == "Player")
+            {
+                CastDefensiveSpells(victimFairy, PlayerSpells[forwardFairyNumber, 1], PlayerSpells[forwardFairyNumber, 3]);
+            }
+            else
+            {
+                CastDefensiveSpells(victimFairy, EnemySpells[forwardFairyNumber, 1], EnemySpells[forwardFairyNumber, 3]);
+            }
 
             ReduceMana(spellName, forwardFairyNumber, forward.Name);
             ReduceMana(victimFairy.Spells[1], victimFairyNumber, victim.Name);
@@ -295,9 +379,9 @@ namespace Assets.Scripts
             StartCoroutine(GotoNewMove(victim.Name));
         }
 
+
         private void OnFairyAttackEvent(int forwardFairyNumber, int victimFairyNumber, string spellName, string victim)
         {
-            Debug.Log(forwardFairyNumber + " " + victimFairyNumber + " " + spellName + " " + victim);
             if (victim == "Player")
             {
                 ReplayAttack(forwardFairyNumber, victimFairyNumber, spellName, enemy, player);
@@ -369,14 +453,14 @@ namespace Assets.Scripts
                 {
                     if (PlayerSpells[fairy, i] != null && PlayerSpells[fairy, i].Name == spell)
                     {
-                        PlayerSpells[fairy, i].Mana--;
+                        PlayerSpells[fairy, i].Mana = Math.Max(PlayerSpells[fairy, i].Mana - 1, 0);
                     }
                 }
                 else
                 {
-                    if (EnemySpells[fairy, i] != null &&  EnemySpells[fairy, i].Name == spell)
+                    if (EnemySpells[fairy, i] != null && EnemySpells[fairy, i].Name == spell)
                     {
-                        EnemySpells[fairy, i].Mana--;
+                        EnemySpells[fairy, i].Mana = Math.Max(EnemySpells[fairy, i].Mana - 1, 0);
                     }
                 }
             }

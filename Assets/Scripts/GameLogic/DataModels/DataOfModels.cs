@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -11,7 +10,6 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         static DataOfModels()
         {
-            //var jsonObject = JsonConvert.SerializeObject(Fairies.Keys);
             try
             {
 
@@ -34,10 +32,7 @@ namespace Assets.Scripts.GameLogic.DataModels
                 Debug.Log(ex.Message);
             }
         }
-
-        public static Dictionary<string, OffensiveSpell> Spells { get; set; }
-
-
+        
         public static Dictionary<string, OffensiveSpell> OffensiveSpells = new Dictionary<string, OffensiveSpell>();
 
         public static Dictionary<string, DefensiveSpell> DefensiveSpells = new Dictionary<string, DefensiveSpell>();

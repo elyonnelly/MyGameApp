@@ -3,8 +3,8 @@ using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
@@ -22,7 +22,6 @@ namespace Assets.Scripts.GUI
         public SpriteRenderer FairyPhoto;
         public Text Message;
 
-
         public void ExitApp()
         {
             Application.Quit();
@@ -38,6 +37,7 @@ namespace Assets.Scripts.GUI
                 Debug.Log(ex.Message);
             }
         }
+
         public void LoadScene(string sceneName)
         {
             if (SceneManager.GetActiveScene().name == "Choise Fairy Scene" || SceneManager.GetActiveScene().name == "Winner Scene")
@@ -53,7 +53,7 @@ namespace Assets.Scripts.GUI
 
                 try
                 {
-                    using (var writer = new StreamWriter(Application.persistentDataPath + "/player.json"))
+                    using (var writer = new StreamWriter(Application.persistentDataPath +"player.json"))
                     {
                         writer.Write(JsonConvert.SerializeObject(GameDataManager.Instance.PlayerData));
                     }
@@ -63,34 +63,17 @@ namespace Assets.Scripts.GUI
                     Debug.Log(ex.Message);
                 }
             }
+
             SceneManager.LoadScene(sceneName);
         }
-
-        private void ShowMessage()
-        {
-            Message.text = "Please fill all slots";
-            StartCoroutine(FadeText(Message));
-        }
-
-        private IEnumerator FadeText(Text text)
-        {
-            var color = new Color(text.color.r, text.color.g, text.color.b, 10);
-            text.color = color;
-            for (var f = 1f; f >= 0; f -= 0.02f)
-            {
-                text.color = color;
-                color.a = f;
-                yield return new WaitForEndOfFrame();
-            }
-        }
-        //TODO сюда мы пишем про обработку, ну например, кнопок на сцене
+        
 
         public void DisplayAllowFairies()
         {
             CurrentEssence = "fairy";
             SpellInfo.text = "";
 
-            for (int i = 0; i < AllowSpells.transform.childCount; i++)
+            for (var i = 0; i < AllowSpells.transform.childCount; i++)
             {
                 AllowSpells.transform.GetChild(i).gameObject.SetActive(false);
             }
@@ -105,14 +88,13 @@ namespace Assets.Scripts.GUI
             FairyDescription.text = "";
             FairyPhoto.sprite = null;
 
-            for (int i = 0; i < AllowFairies.transform.childCount; i++)
+            for (var i = 0; i < AllowFairies.transform.childCount; i++)
             {
                 AllowFairies.transform.GetChild(i).gameObject.SetActive(false);
             }
 
             ShowSpells();
         }
-
 
         public void ScrollRight()
         {
@@ -138,6 +120,17 @@ namespace Assets.Scripts.GUI
             }
         }
 
+        private void ScrollRightSpells()
+        {
+            PageSpell = PageSpell > 1 ? PageSpell : PageSpell + 1;
+            ShowSpells();
+        }
+
+        private void ScrollLeftSpells()
+        {
+            PageSpell = PageSpell < 1 ? PageSpell : PageSpell - 1;
+            ShowSpells();
+        }
         private void ScrollRightFairies()
         {
             PageFairy = PageFairy > 1 ? PageFairy : PageFairy + 1;
@@ -150,17 +143,24 @@ namespace Assets.Scripts.GUI
             ShowFairies();
         }
 
+        private void ShowMessage()
+        {
+            Message.text = "Please fill all slots";
+            StartCoroutine(FadeText(Message));
+        }
 
-        public void ScrollRightSpells()
+        private IEnumerator FadeText(Text text)
         {
-            PageSpell = PageSpell > 1 ? PageSpell : PageSpell + 1;
-            ShowSpells();
+            var color = new Color(text.color.r, text.color.g, text.color.b, 10);
+            text.color = color;
+            for (var f = 1f; f >= 0; f -= 0.02f)
+            {
+                text.color = color;
+                color.a = f;
+                yield return new WaitForEndOfFrame();
+            }
         }
-        public void ScrollLeftSpells()
-        {
-            PageSpell = PageSpell < 1 ? PageSpell : PageSpell - 1;
-            ShowSpells();
-        }
+
 
         private void ShowFairies()
         {
@@ -169,12 +169,12 @@ namespace Assets.Scripts.GUI
                 AllowFairies.transform.GetChild(i).gameObject.SetActive(false);
             }
 
-            var fairies = new string[AllowFairies.GetComponent<ListOfFairies>().TableOfFairies.Count];
+            var fairies = new string[AllowFairies.GetComponent<AllowFairiesController>().TableOfFairies.Count];
 
-            AllowFairies.GetComponent<ListOfFairies>().TableOfFairies.Keys.CopyTo(fairies, 0);
+            AllowFairies.GetComponent<AllowFairiesController>().TableOfFairies.Keys.CopyTo(fairies, 0);
             for (var i = PageFairy * 36; i < Math.Min((PageFairy + 1) * 36, fairies.Length); i++)
             {
-                AllowFairies.GetComponent<ListOfFairies>().TableOfFairies[fairies[i]].SetActive(true);
+                AllowFairies.GetComponent<AllowFairiesController>().TableOfFairies[fairies[i]].SetActive(true);
             }
         }
 
@@ -185,12 +185,12 @@ namespace Assets.Scripts.GUI
                 AllowSpells.transform.GetChild(i).gameObject.SetActive(false);
             }
 
-            var spells = new string[AllowSpells.GetComponent<ListOfSpell>().TableOfSpells.Count];
+            var spells = new string[AllowSpells.GetComponent<AllowSpellsController>().TableOfSpells.Count];
 
-            AllowSpells.GetComponent<ListOfSpell>().TableOfSpells.Keys.CopyTo(spells, 0);
+            AllowSpells.GetComponent<AllowSpellsController>().TableOfSpells.Keys.CopyTo(spells, 0);
             for (var i = PageSpell * 36; i < Math.Min((PageSpell + 1) * 36, spells.Length); i++)
             {
-                AllowSpells.GetComponent<ListOfSpell>().TableOfSpells[spells[i]].SetActive(true);
+                AllowSpells.GetComponent<AllowSpellsController>().TableOfSpells[spells[i]].SetActive(true);
             }
         }
     }

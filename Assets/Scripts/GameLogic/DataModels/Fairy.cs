@@ -1,6 +1,6 @@
 ﻿using System;
+using Assets.Scripts.GUI;
 using Newtonsoft.Json;
-using UnityEngine;
 
 namespace Assets.Scripts.GameLogic.DataModels
 {
@@ -29,7 +29,22 @@ namespace Assets.Scripts.GameLogic.DataModels
 
         //[DataMember]
         public string[] Spells { set; get; }
-        public int Level { set; get; }
+        public int level;
+
+        public int Level
+        {
+            set
+            {
+                if (level == LevelForEvolution)
+                {
+                    Name = EvolvesTo;
+                    //Description = DataOfModels.Fairies[EvolvesTo].Name;
+                }
+
+                level = value;
+            }
+            get => level;
+        }
 
         private double healthPoint;
         //[DataMember]
@@ -40,7 +55,7 @@ namespace Assets.Scripts.GameLogic.DataModels
                 if (value <= 0)
                 {
                     IsDead = true;
-                    FairyDeath();
+                    //FairyDeath();
                     healthPoint = 0;
                 }
                 else
@@ -90,7 +105,7 @@ namespace Assets.Scripts.GameLogic.DataModels
             {
                 if (value - experiencePoints > Level * 0.25)
                 {
-                    Level += (value - experiencePoints)/5;
+                    Level += (value - experiencePoints) / 5;
                 }
 
                 experiencePoints = value;
@@ -122,54 +137,34 @@ namespace Assets.Scripts.GameLogic.DataModels
             DamageCoefficient = 1;
             AbilityToCriticalHit = true;
             AbilityToTakeCriticalHit = true;
-            DamageReduction = 0;
+            DamageReduction = 1;
         }
-
-
         public bool IsDead { set; get; }
-
+        public string Wound { set; get; }
+        public double RateFactor { get; set; }
+        public double DamageCoefficient { get; set; }
+        public bool AbilityToCriticalHit {get;set;}
+        public bool AbilityToTakeCriticalHit { get; set; }
+        public double DamageReduction { get; set; }
         public string GetState()
         {
             return $"HP: {HealthPoint} Lvl: {Level}";
         }
 
-        public virtual void Attack(Fairy victim, OffensiveSpell spell)
+        public void Attack(Fairy victim, OffensiveSpell spell)
         {
+            if (victim.AbilityToTakeCriticalHit && AbilityToCriticalHit)
+            {
+                Effects.SetOfEffects[Math.Min((int)spell.Effect, 7)](this, victim, spell);
+            }
+            else
+            {
+                Effects.SetOfEffects[0](this, victim, spell);
+            }
 
-            var effectiveness = DataOfModels.TableOfEffectiveness[(int)Element, (int)victim.Element];
-
-            //просто атака заклинания
-            var damage = effectiveness == -1 ? spell.Damage * LevelCoefficient - 0.8 * spell.Damage * LevelCoefficient :
-                effectiveness == 1 ? spell.Damage * LevelCoefficient + 0.8 * spell.Damage * LevelCoefficient : spell.Damage * LevelCoefficient;
-
-            Debug.Log(damage);
-            victim.HealthPoint -= Math.Max((int)damage, 1);
-
+            victim.AbilityToTakeCriticalHit = true;
+            AbilityToCriticalHit = true;
         }
-
-
-        //TODO для других(не просто атакующих) заклинаний
-        public virtual void CastSpell(Spell spell)
-        {
-        }
-
-        public virtual void FairyDeath()
-        {
-        }
-
-        public string Wound { set; get; }
-
-        public double RateFactor { get; set; }
-        public double DamageCoefficient { get; set; }
-        public bool AbilityToCriticalHit
-        {
-            get;
-            set;
-        }
-        public bool AbilityToTakeCriticalHit { get; set; }
-        public double DamageReduction { get; set; }
-
-        public static Fairy Default => new Fairy();
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))

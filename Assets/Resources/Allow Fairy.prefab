@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5133821509566627763}
   - component: {fileID: 5133821509566627760}
   - component: {fileID: 5133821509566627761}
-  - component: {fileID: 3252927869817696058}
+  - component: {fileID: 2876656682216718070}
   m_Layer: 0
   m_Name: Allow Fairy
   m_TagString: Fairy
@@ -129,7 +129,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.55483097, y: 0.5392338}
   m_EdgeRadius: 0
---- !u!114 &3252927869817696058
+--- !u!114 &2876656682216718070
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,5 +141,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d629a5d8a5d2ca4e823adc22b9e0aae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Info: {fileID: 0}
+  Description: {fileID: 0}
+  Photo: {fileID: 0}
   IsAllow: 0
   IsUsed: 0

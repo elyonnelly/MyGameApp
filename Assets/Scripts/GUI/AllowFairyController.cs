@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.GUI
 {
-    public class AllowFairy : MonoBehaviour
+    public class AllowFairyController : MonoBehaviour, IDragHandler, ICollisionHandler
     {
         public Text Info;
         public Text Description;
@@ -15,7 +15,6 @@ namespace Assets.Scripts.GUI
         private Vector3 initialPosition;
         private Vector3 offset;
         private bool isDrag;
-        private Fairy fairy;
 
         private void Start()
         {
@@ -23,27 +22,20 @@ namespace Assets.Scripts.GUI
             Info = GameObject.FindGameObjectWithTag("FairyInfo").GetComponent<Text>();
             Description = GameObject.FindGameObjectWithTag("FairyDescription").GetComponent<Text>();
             Photo = GameObject.FindGameObjectWithTag("FairyPhoto").GetComponent<SpriteRenderer>();
-
-
-            foreach (var fairy in GameDataManager.Instance.PlayerData.AllowFairies)
-            {
-                if (fairy.Name == name)
-                {
-                    this.fairy = fairy;
-                }
-            }
-
         }
-        private void OnDestroy()
+
+        private void OnDisable()
         {
             EventAggregator.DisableFairy -= MakeUnused;
         }
-        private void OnMouseDown()
+
+        public void OnMouseDown()
         {
             if (!IsAllow || IsUsed)
             {
                 return;
             }
+
             gameObject.tag = "Allow Fairy";
 
             //переместили чуть вперед, чтобы не скрывался под другими
@@ -60,62 +52,68 @@ namespace Assets.Scripts.GUI
 
         private void ViewInfo()
         {
-            var fairy = (Fairy)DataOfModels.Fairies[name].Clone();
+            var fairy = (Fairy) DataOfModels.Fairies[name].Clone();
             Photo.sprite = Resources.Load<Sprite>($"Sprites/Fairies Icon/Description Icon/{fairy.Name}");
-            Info.text = $"Level:  {fairy.Level} \n Mana: {fairy.Magic}\n Hit Points: {fairy.HitPoints}";
+            Info.text = $"Level:  {fairy.Level} \n Experience Points:{fairy.ExperiencePoints}\n Hit Points: {fairy.HitPoints}";
             Description.text = $"{fairy.Name}\n\n{fairy.Description}\n ";
         }
 
-        private void OnMouseUp()
+        public void OnMouseUp()
         {
             if (!IsAllow || IsUsed)
             {
                 return;
             }
+
             transform.position = initialPosition;
             isDrag = false;
         }
-        private void OnMouseDrag()
+
+        public void OnMouseDrag()
         {
             if (!IsAllow || IsUsed)
             {
                 return;
             }
+
             var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             var curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
             transform.position = curPosition;
         }
-        private void OnTriggerEnter2D(Collider2D collider)
+
+        public void OnTriggerEnter2D(Collider2D collider)
         {
             if (collider.tag != "Active Fairy" || tag != "Allow Fairy")
             {
                 return;
             }
-            var oldFairy = collider.GetComponent<ActiveFairy>();
+
+            var oldFairy = collider.GetComponent<ActiveFairyController>();
             var newFairy = gameObject;
-            
+
             if (!oldFairy.IsEmpty)
             {
                 EventAggregator.OnDisableFairy(oldFairy.Number, oldFairy.gameObject.name);
             }
+
             EventAggregator.OnActivateFairy(oldFairy.Number, newFairy.name);
-            ChangeFairy(oldFairy.gameObject, newFairy);
+            ChangeObject(oldFairy.gameObject, newFairy);
             MakeUsed();
         }
 
-        private void ChangeFairy(GameObject oldFairy, GameObject newFairy)
+        public void ChangeObject(GameObject oldFairy, GameObject newFairy)
         {
             oldFairy.name = newFairy.name;
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 oldFairy.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Spells Icon/Defensive Spells/Empty Slot");
             }
+
             oldFairy.GetComponent<SpriteRenderer>().sprite = newFairy.GetComponent<SpriteRenderer>().sprite;
-            oldFairy.GetComponent<ActiveFairy>().IsEmpty = false;
+            oldFairy.GetComponent<ActiveFairyController>().IsEmpty = false;
         }
 
-        //эту обработку возможно стоит перенести в ну например ListOfFairies
-        private void MakeUnused(int position, string name)
+        public void MakeUnused(int position, string name)
         {
             if (name == gameObject.name)
             {
@@ -123,13 +121,12 @@ namespace Assets.Scripts.GUI
             }
         }
 
-        private void MakeUsed()
+        public void MakeUsed()
         {
             GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/EmptyPrefab");
             transform.position = initialPosition;
             IsUsed = true;
             isDrag = false;
         }
-
     }
 }
